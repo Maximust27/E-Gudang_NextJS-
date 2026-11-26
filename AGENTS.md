@@ -17,4 +17,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Maintain accessible keyboard navigation, visible focus, responsive layout and light/dark parity.
 - Keep database operations server-side. Never commit secrets, real warehouse data, or generated Prisma client.
 - Do not expand the current phase into unrelated business functionality or dependency upgrades.
-- Before review run `npx next typegen`, `npx tsc --noEmit`, `npx eslint .`, and `npm run build`. Report any checks not run.
+- Follow `docs/ENGINEERING.md`: shortest readable code, specification-first, measured optimization, no premature abstraction. Add focused regression tests for changed behavior.
+- Before review run `npm run check`. Report any checks not run; do not claim performance or accessibility without measurement.
