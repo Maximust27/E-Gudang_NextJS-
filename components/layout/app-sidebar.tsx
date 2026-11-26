@@ -40,7 +40,7 @@ function NavigationLink({
         asChild
         isActive={active}
         tooltip={item.label}
-        className="data-active:font-semibold"
+        className="data-[active=true]:font-semibold"
       >
         <Link
           href={item.href}
@@ -84,7 +84,7 @@ export function AppSidebar() {
           onClick={closeMobileMenu}
           className="flex min-w-0 items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sidebar-ring"
         >
-          <span className="flex size-control shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <span className="flex size-control pointer-coarse:size-control-touch shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Warehouse className="size-icon-large" aria-hidden="true" />
           </span>
           <span className="truncate type-card-title group-data-[collapsible=icon]:hidden">

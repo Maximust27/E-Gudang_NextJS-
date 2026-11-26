@@ -36,7 +36,7 @@ export function MenuSearch() {
           type="button"
           aria-label="Cari menu"
           size="icon"
-          className="shrink-0 gap-2 lg:w-auto lg:px-3"
+          className="shrink-0 gap-2 lg:w-auto lg:pointer-coarse:w-auto lg:px-3"
         >
           <Search aria-hidden="true" />
           <span className="hidden lg:inline">Cari menu</span>
