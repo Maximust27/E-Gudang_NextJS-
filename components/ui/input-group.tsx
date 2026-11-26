@@ -74,7 +74,7 @@ const inputGroupButtonVariants = cva(
         sm: "",
         "icon-xs":
           "size-6 rounded-sm p-0 has-[>svg]:p-0",
-        "icon-sm": "size-8 p-0 has-[>svg]:p-0",
+        "icon-sm": "size-control-compact p-0 has-[>svg]:p-0",
       },
     },
     defaultVariants: {
@@ -94,7 +94,7 @@ function InputGroupButton({
   return (
     <Button
       type={type}
-      size={size}
+      size={size ?? "xs"}
       variant={variant}
       className={cn(inputGroupButtonVariants({ size }), className)}
       {...props}

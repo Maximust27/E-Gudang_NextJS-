@@ -5,24 +5,24 @@ import { Toaster as Sonner, type ToasterProps } from "sonner"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { resolvedTheme, theme } = useTheme()
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={(resolvedTheme ?? theme ?? "system") as ToasterProps["theme"]}
       className="toaster group"
       icons={{
         success: (
-          <CircleCheckIcon className="size-icon-inline text-success-foreground" />
+          <CircleCheckIcon className="size-icon-inline text-success" />
         ),
         info: (
           <InfoIcon className="size-4" />
         ),
         warning: (
-          <TriangleAlertIcon className="size-icon-inline text-warning-foreground" />
+          <TriangleAlertIcon className="size-icon-inline text-warning" />
         ),
         error: (
-          <OctagonXIcon className="size-icon-inline text-danger-foreground" />
+          <OctagonXIcon className="size-icon-inline text-destructive" />
         ),
         loading: (
           <Loader2Icon className="size-4 animate-spin" />

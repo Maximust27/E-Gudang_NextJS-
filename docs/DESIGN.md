@@ -235,7 +235,7 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 ## 11. Sumber tunggal implementasi
 
 ```text
-src/
+(project root)/
 ├── app/globals.css             # Entry global; Tailwind, theme mapping, base styles
 ├── styles/
 │   ├── tokens.css              # Nilai :root dan .dark; radius, spacing/layout, warna
@@ -243,7 +243,8 @@ src/
 ├── components/
 │   ├── ui/                     # Primitive shadcn/ui yang distandardisasi
 │   ├── shared/                 # Komponen aplikasi reusable
-│   └── layout/                 # App shell, sidebar, header, theme provider
+│   ├── providers/              # Theme provider
+│   └── layout/                 # App shell, sidebar, header (fase berikutnya)
 └── lib/utils.ts                # cn() dan helper ringan
 ```
 
@@ -253,6 +254,13 @@ src/
 - `next/font` mengatur font Geist di root layout; `next-themes` mengelola pilihan light/dark/system tanpa duplikasi palette.
 - Jangan edit komponen vendor secara acak. Ketika shadcn/ui di-update, review perubahan agar customisasi baseline tidak hilang.
 - CSS modul/custom class hanya jika diperlukan untuk behavior spesifik (misalnya layout print barcode), dan tetap menggunakan token bila relevan.
+
+### Catatan implementasi Phase 1
+
+- Token tambahan `primary-hover` dan `destructive-hover` menjaga kontras teks saat hover. Light: #1D4ED8 / #991B1B; dark: #BFDBFE / #FECACA.
+- Varian ukuran Nova tetap tersedia untuk kompatibilitas. Ukuran ringkas hanya dipakai untuk pagination, kalender, kontrol tertanam dan konteks padat yang memang memerlukannya. Kontrol utama menggunakan token 40px, atau minimal 44px pada perangkat pointer coarse.
+- Preview sementara tersedia di `/` selama audit fase ini. Data pada preview adalah dummy dan tidak terhubung database. Setelah disetujui, ganti root preview saat implementasi app shell.
+- Validasi scanner, transaksi, dan autentikasi belum berlaku pada fase desain.
 
 ## 12. UI/UX review checklist — wajib sebelum merge
 
