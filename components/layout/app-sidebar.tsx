@@ -30,7 +30,17 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar collapsible="icon" aria-label="Navigasi E-Gudang">
+    <Sidebar
+      collapsible="icon"
+      aria-label="Navigasi E-Gudang"
+      mobileCloseAutoFocus={(event) => {
+        const trigger = document.getElementById("app-sidebar-trigger")
+        if (trigger) {
+          event.preventDefault()
+          trigger.focus()
+        }
+      }}
+    >
       <SidebarHeader className="h-app-header shrink-0 flex-row items-center justify-between gap-2 border-b border-sidebar-border px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2">
         <Link
           href="/dashboard"

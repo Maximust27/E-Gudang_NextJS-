@@ -158,11 +158,13 @@ function Sidebar({
   className,
   children,
   dir,
+  mobileCloseAutoFocus,
   ...props
 }: React.ComponentProps<"div"> & {
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
+  mobileCloseAutoFocus?: React.ComponentProps<typeof SheetContent>["onCloseAutoFocus"]
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
@@ -191,13 +193,7 @@ function Sidebar({
           data-mobile="true"
           className="data-[side=left]:w-(--sidebar-width) data-[side=right]:w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
           showCloseButton={false}
-          onCloseAutoFocus={(event) => {
-            const trigger = document.getElementById("app-sidebar-trigger")
-            if (trigger) {
-              event.preventDefault()
-              trigger.focus()
-            }
-          }}
+          onCloseAutoFocus={mobileCloseAutoFocus}}
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,

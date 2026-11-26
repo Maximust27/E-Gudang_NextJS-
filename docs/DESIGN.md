@@ -244,7 +244,7 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 │   ├── ui/                     # Primitive shadcn/ui yang distandardisasi
 │   ├── shared/                 # Komponen aplikasi reusable
 │   ├── providers/              # Theme provider
-│   └── layout/                 # App shell, sidebar, header (fase berikutnya)
+│   └── layout/                 # App shell, sidebar, header, navigasi
 └── lib/utils.ts                # cn() dan helper ringan
 ```
 
@@ -261,6 +261,14 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 - Varian ukuran Nova tetap tersedia untuk kompatibilitas. Ukuran ringkas hanya dipakai untuk pagination, kalender, kontrol tertanam dan konteks padat yang memang memerlukannya. Kontrol utama menggunakan token 40px, atau minimal 44px pada perangkat pointer coarse.
 - Preview sementara tersedia di `/` selama audit fase ini. Data pada preview adalah dummy dan tidak terhubung database. Setelah disetujui, ganti root preview saat implementasi app shell.
 - Validasi scanner, transaksi, dan autentikasi belum berlaku pada fase desain.
+
+### Catatan implementasi Phase 2
+
+- App shell diterapkan melalui `app/(dashboard)/layout.tsx`. Route login berada di layout terpisah tanpa sidebar. Root mengarahkan ke dashboard selama autentikasi belum tersedia.
+- Konfigurasi navigasi di `components/layout/navigation.ts` menjadi sumber sidebar, breadcrumb dan pencarian menu. Seluruh tujuh menu tersedia selama mode pengembangan; penyaringan role dan otorisasi server mengikuti fase autentikasi.
+- Sidebar desktop menggunakan token 256/64px; mobile menggunakan Sheet dengan lebar maksimum 18rem agar navigasi nyaman. Header memakai token 64px. Tidak ada padding halaman ganda.
+- Pencarian menu berfungsi sebagai navigasi sementara; pencarian nama/SKU/barcode, notifikasi stok, dan akun nyata belum terhubung. Tidak ada angka notifikasi atau data pengguna fiktif.
+- Preview desain Phase 1 diganti dengan root redirect setelah desain disetujui. Lihat `LAYOUT_QA.md` untuk pengujian fase layout.
 
 ## 12. UI/UX review checklist — wajib sebelum merge
 

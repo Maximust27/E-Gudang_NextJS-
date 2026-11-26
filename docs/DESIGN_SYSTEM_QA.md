@@ -1,6 +1,6 @@
 # Phase 1 — Design System audit
 
-Preview sementara: http://localhost:3000/ (dummy data, tidak menyimpan transaksi).
+Preview Phase 1 telah diganti oleh app shell pada Phase 2. Source preview sebelumnya tetap tersedia pada commit 8d1ebb44b70e7e3d0116a9f4be13f243540e75ae. Checklist ini adalah referensi historis desain; untuk app shell gunakan [LAYOUT_QA.md](./LAYOUT_QA.md).
 
 ## Pengujian lokal (belum dijalankan pada commit implementasi ini)
 

@@ -13,4 +13,6 @@ Gunakan versi Node/npm yang kompatibel dengan lockfile. Instal dengan `npm ci`, 
 - [Project Structure](docs/PROJECT_STRUCTURE.md)
 - [Design System QA](docs/DESIGN_SYSTEM_QA.md)
 
-Pada feature branch design system, root page menampilkan preview komponen dengan data dummy. Database schema, autentikasi, app shell dan fitur inventaris dikerjakan pada fase berikutnya. Jangan gunakan data operasional nyata pada preview.
+- [App Layout QA](docs/LAYOUT_QA.md)
+
+Root mengarahkan ke /dashboard. App shell digunakan oleh tujuh halaman utama, sedangkan /login memiliki layout terpisah. Seluruh halaman masih placeholder; database schema, autentikasi dan fitur inventaris belum tersedia. Jangan gunakan aplikasi ini untuk data operasional nyata.
