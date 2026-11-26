@@ -56,8 +56,8 @@ Gunakan skala 4px yang sama dengan skala spacing Tailwind standar (dengan root 1
 | --- | --- | --- |
 | `1` | 4px | Jarak mikro, label dan helper tertentu |
 | `2` | 8px | Ikon-teks, label-input, grup tombol |
-| `3` | 12px | Padding horizontal input, gap item kecil |
-| `4` | 16px | Gap card, gap field, padding halaman mobile |
+| `3` | 12px | Padding horizontal input, gap card/grid, padding card compact |
+| `4` | 16px | Gap field, padding card default, padding halaman mobile |
 | `5` | 20px | Padding alternatif bila diperlukan |
 | `6` | 24px | Padding halaman desktop, gap section |
 | `8` | 32px | Pemisah section besar |
@@ -136,7 +136,7 @@ Palette revisi: monochrome netral (putih, abu-abu, charcoal), sidebar mengikuti 
 | `success` | `#15803D` | `#6ECF97` | Aksen sukses |
 | `success-surface` | `#F0FDF4` | `#14532D` | Badge sukses |
 | `success-foreground` | `#166534` | `#DCFCE7` | Teks sukses |
-| `warning` | `#B45309` | `#B45309` | Aksen perhatian |
+| `warning` | `#B45309` | `#FBBF24` | Aksen perhatian |
 | `warning-surface` | `#FFFBEB` | `#78350F` | Badge perhatian |
 | `warning-foreground` | `#92400E` | `#FEF3C7` | Teks perhatian |
 | `destructive` | `#B91C1C` | `#FCA5A5` | Action berbahaya / error |

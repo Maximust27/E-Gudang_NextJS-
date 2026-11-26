@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { toast } from "sonner"
-import { Plus, Search, Sun, Moon, Monitor, MoreHorizontal, Package, Download } from "lucide-react"
+import { Plus, Search, Sun, Moon, Monitor, MoreHorizontal, Package, Download, LayoutDashboard, ArrowDownToLine, ArrowUpFromLine, ClipboardCheck, Settings, Warehouse } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { PageContainer } from "@/components/shared/page-container"
@@ -69,6 +69,22 @@ const chartConfig = {
 
 const numberFormat = new Intl.NumberFormat("id-ID")
 
+const previewKpis = [
+  { label: "Total stok", value: 12480, detail: "Karton tersedia" },
+  { label: "Total SKU", value: 248, detail: "Varian barang aktif" },
+  { label: "Stok menipis", value: 8, detail: "SKU perlu diperiksa" },
+  { label: "Transaksi hari ini", value: 32, detail: "Barang masuk & keluar" },
+]
+
+const navigationPreview = [
+  { label: "Dashboard", icon: LayoutDashboard, active: true },
+  { label: "Data Barang", icon: Package, active: false },
+  { label: "Barang Masuk", icon: ArrowDownToLine, active: false },
+  { label: "Barang Keluar", icon: ArrowUpFromLine, active: false },
+  { label: "Stok Opname", icon: ClipboardCheck, active: false },
+  { label: "Pengaturan", icon: Settings, active: false },
+]
+
 export default function Home() {
   const { setTheme } = useTheme()
   const [query, setQuery] = useState("")
@@ -90,7 +106,7 @@ export default function Home() {
         </Breadcrumb>
         <PageHeader
           title="E-Gudang Design System"
-          description="Preview audit Phase 1. Seluruh data hanya contoh; tidak ada transaksi database."
+          description="Monochrome revision · Phase 1.1. Data hanya contoh untuk audit visual."
           actions={
             <>
               <Button variant="outline" onClick={() => setTheme("light")}><Sun /> Terang</Button>
@@ -100,9 +116,96 @@ export default function Home() {
           }
         />
 
-        <section className="flex flex-col gap-4">
+        <section className="flex flex-col gap-3" aria-label="Preview dashboard">
+          <SectionHeader title="Ringkasan gudang" description="Contoh susunan visual dashboard; bukan data operasional." />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {previewKpis.map((item) => (
+              <Card size="sm" key={item.label}>
+                <CardContent className="flex min-w-0 flex-col gap-2">
+                  <p className="type-label text-muted-foreground">{item.label}</p>
+                  <p className="type-kpi">{numberFormat.format(item.value)}</p>
+                  <p className="type-caption text-muted-foreground">{item.detail}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="grid min-w-0 gap-3 lg:grid-cols-3">
+            <Card className="min-w-0 lg:col-span-2">
+              <CardHeader>
+                <CardTitle>Pergerakan stok</CardTitle>
+                <CardDescription>Barang masuk dan keluar · CTN</CardDescription>
+              </CardHeader>
+              <CardContent className="flex min-w-0 flex-col gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div><p className="type-caption text-muted-foreground">Barang masuk</p><p className="type-kpi">650</p></div>
+                  <div><p className="type-caption text-muted-foreground">Barang keluar</p><p className="type-kpi">490</p></div>
+                </div>
+                <ChartContainer config={chartConfig} className="aspect-auto h-56 w-full min-w-0">
+                  <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                    <YAxis width={36} tickLine={false} axisLine={false} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar dataKey="inbound" fill="var(--color-inbound)" radius={4} isAnimationActive={false} />
+                    <Bar dataKey="outbound" fill="var(--color-outbound)" radius={4} isAnimationActive={false} />
+                  </BarChart>
+                </ChartContainer>
+                <p className="type-caption text-muted-foreground">Contoh data selama lima hari.</p>
+              </CardContent>
+            </Card>
+            <Card className="min-w-0">
+              <CardHeader>
+                <CardTitle>Perlu perhatian</CardTitle>
+                <CardDescription>Contoh status inventaris</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                {[
+                  { label: "Stok menipis", count: 8, variant: "warning" },
+                  { label: "Stok habis", count: 3, variant: "danger" },
+                  { label: "Mendekati expired", count: 5, variant: "warning" },
+                  { label: "Expired", count: 1, variant: "danger" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between gap-2 border-b border-border pb-3 last:border-b-0 last:pb-0">
+                    <span className="type-body">{item.label}</span>
+                    <Badge variant={item.variant as "warning" | "danger"} className="tabular-nums">{item.count}</Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <SectionHeader title="Surface navigasi" description="Sampel warna sidebar dan active state; app shell sebenarnya berada di branch layout." />
+          <div className="grid min-w-0 gap-3 md:grid-cols-2">
+            <div className="flex flex-col gap-2 rounded-lg border border-sidebar-border bg-sidebar p-4 text-sidebar-foreground">
+              <div className="flex items-center gap-2 border-b border-sidebar-border pb-3">
+                <Warehouse className="size-icon-standard" aria-hidden="true" />
+                <span className="type-card-title">E-Gudang</span>
+              </div>
+              {navigationPreview.map(({ label, icon: Icon, active }) => (
+                <div key={label} className={active ? "flex min-h-control items-center gap-2 rounded-md bg-sidebar-primary px-3 text-sidebar-primary-foreground type-label" : "flex min-h-control items-center gap-2 rounded-md px-3 type-label"}>
+                  <Icon className="size-icon-standard shrink-0" aria-hidden="true" />
+                  {label}
+                </div>
+              ))}
+            </div>
+            <Card>
+              <CardHeader><CardTitle>Visual principles</CardTitle><CardDescription>Monochrome, calm, data-first.</CardDescription></CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                <p className="type-body">Surface netral, border halus, dan aksen warna hanya untuk data dan status penting.</p>
+                <Separator />
+                <div className="flex flex-wrap gap-2"><Badge variant="success">Tersedia</Badge><Badge variant="warning">Menipis</Badge><Badge variant="danger">Habis</Badge></div>
+                <div className="flex flex-wrap gap-2"><Button onClick={() => toast.success("Contoh aksi utama")}><Plus /> Tambah barang</Button><Button variant="outline" onClick={() => toast.info("Contoh aksi sekunder")}><Download /> Ekspor</Button></div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
           <SectionHeader title="Warna & typography" description="Token semantik dan hirarki teks global." />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {palette.map(([name, color]) => (
               <Card key={name} size="sm">
                 <CardContent className="flex flex-col gap-2">
@@ -209,17 +312,7 @@ export default function Home() {
           <Tabs defaultValue="summary"><TabsList><TabsTrigger value="summary">Ringkasan</TabsTrigger><TabsTrigger value="history">Riwayat</TabsTrigger></TabsList><TabsContent value="summary"><Card><CardContent>Konten ringkasan contoh.</CardContent></Card></TabsContent><TabsContent value="history"><Card><CardContent>Konten riwayat contoh.</CardContent></Card></TabsContent></Tabs>
         </section>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader title="KPI dan grafik" description="Data dummy untuk menguji typography angka dan token chart." />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Card><CardHeader><CardTitle className="flex items-center justify-between gap-2">Total stok <Package className="size-icon-standard text-muted-foreground" /></CardTitle></CardHeader><CardContent><p className="type-kpi">12.480</p><p className="type-caption text-muted-foreground">Karton tersedia</p></CardContent></Card>
-            <Card><CardHeader><CardTitle>Total SKU</CardTitle></CardHeader><CardContent><p className="type-kpi">248</p><p className="type-caption text-muted-foreground">Varian aktif</p></CardContent></Card>
-          </div>
-          <Card><CardHeader><CardTitle>Pergerakan stok</CardTitle><CardDescription>Contoh barang masuk dan keluar, satuan karton.</CardDescription></CardHeader><CardContent>
-            <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full"><BarChart accessibilityLayer data={chartData}><CartesianGrid vertical={false} /><XAxis dataKey="day" tickLine={false} axisLine={false} /><YAxis width={36} tickLine={false} axisLine={false} /><ChartTooltip content={<ChartTooltipContent />} /><ChartLegend content={<ChartLegendContent />} /><Bar dataKey="inbound" fill="var(--color-inbound)" radius={4} isAnimationActive={false} /><Bar dataKey="outbound" fill="var(--color-outbound)" radius={4} isAnimationActive={false} /></BarChart></ChartContainer>
-            <p className="type-caption text-muted-foreground">Contoh total: 650 CTN masuk dan 490 CTN keluar.</p>
-          </CardContent></Card>
-        </section>
+
       </PageContainer>
     </main>
   )
