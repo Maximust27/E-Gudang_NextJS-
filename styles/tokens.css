@@ -1,0 +1,135 @@
+/* E-Gudang design tokens. Source: docs/DESIGN.md, sections 2-6. */
+:root {
+  /* Light theme */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: var(--secondary);
+  --muted-foreground: #475569;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+  --border: #e2e8f0;
+  --input: #64748b;
+  --ring: var(--primary);
+
+  /* Status: use surface/foreground pairs for readable text. */
+  --success: #16a34a;
+  --success-surface: #f0fdf4;
+  --success-foreground: #166534;
+  --warning: #d97706;
+  --warning-surface: #fffbeb;
+  --warning-foreground: #92400e;
+  --destructive: #b91c1c;
+  --destructive-foreground: #ffffff;
+  --danger-surface: #fef2f2;
+  --danger-foreground: #991b1b;
+
+  /* Sidebar stays dark in both themes. */
+  --sidebar: #0f172a;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #93c5fd;
+
+  --chart-1: #2563eb; /* Inbound */
+  --chart-2: #0f766e; /* Outbound */
+  /* Keep the unused Nova chart tokens for compatibility. */
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+
+  /* Typography: rem units respect the user's root font size. */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --type-page-title-size: 1.5rem;
+  --type-page-title-line: 2rem;
+  --type-section-title-size: 1.125rem;
+  --type-section-title-line: 1.75rem;
+  --type-card-title-size: 1rem;
+  --type-card-title-line: 1.5rem;
+  --type-body-size: 0.875rem;
+  --type-body-line: 1.25rem;
+  --type-label-size: var(--type-body-size);
+  --type-label-line: var(--type-body-line);
+  --type-caption-size: 0.75rem;
+  --type-caption-line: 1rem;
+  --type-badge-size: var(--type-caption-size);
+  --type-badge-line: var(--type-caption-line);
+  --type-kpi-size: 1.875rem;
+  --type-kpi-line: 2.25rem;
+
+  /* Radius: explicit values, not the Nova multiplier scale. */
+  --radius: 0.5rem;
+  --ds-radius-sm: 0.375rem;
+  --ds-radius-md: var(--radius);
+  --ds-radius-lg: 0.75rem;
+  --ds-radius-xl: 1rem;
+  --ds-radius-full: 9999px;
+
+  /* Layout/control dimensions; routine gaps use Tailwind's 4px grid. */
+  --control-height: 2.5rem;
+  --control-compact-height: 2rem;
+  --control-touch-height: 2.75rem;
+  --table-header-height: 2.75rem;
+  --table-row-height: 3rem;
+  --app-header-height: 4rem;
+  --app-sidebar-width: 16rem;
+  --app-sidebar-collapsed-width: 4rem;
+  --icon-inline-size: 1rem;
+  --icon-standard-size: 1.25rem;
+  --icon-large-size: 1.5rem;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: var(--card);
+  --popover-foreground: var(--card-foreground);
+  --primary: #93c5fd;
+  --primary-foreground: #0f172a;
+  --secondary: #334155;
+  --secondary-foreground: #f8fafc;
+  --muted: var(--secondary);
+  --muted-foreground: #cbd5e1;
+  --accent: #334155;
+  --accent-foreground: #f8fafc;
+  --border: #475569;
+  --input: #94a3b8;
+  --ring: var(--primary);
+
+  --success: #4ade80;
+  --success-surface: #14532d;
+  --success-foreground: #dcfce7;
+  --warning: #fbbf24;
+  --warning-surface: #78350f;
+  --warning-foreground: #fef3c7;
+  --destructive: #fca5a5;
+  --destructive-foreground: #450a0a;
+  --danger-surface: #7f1d1d;
+  --danger-foreground: #fee2e2;
+
+  --sidebar: #0b1220;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #93c5fd;
+
+  --chart-1: #60a5fa;
+  --chart-2: #2dd4bf;
+}
