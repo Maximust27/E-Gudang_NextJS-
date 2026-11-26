@@ -35,12 +35,12 @@ function NavigationLink({
   const Icon = item.icon
 
   return (
-    <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
+    <SidebarMenuItem>
       <SidebarMenuButton
         asChild
         isActive={active}
         tooltip={item.label}
-        className="data-[active=true]:font-semibold"
+        className="gap-0! px-0! data-[active=true]:font-semibold"
       >
         <Link
           href={item.href}
@@ -48,8 +48,12 @@ function NavigationLink({
           aria-current={active ? "page" : undefined}
           onClick={onNavigate}
         >
-          <Icon aria-hidden="true" />
-          <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+          <span className="flex w-12 shrink-0 items-center justify-center">
+            <Icon aria-hidden="true" />
+          </span>
+          <span className="min-w-0 flex-1 truncate whitespace-nowrap transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
+            {item.label}
+          </span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -77,17 +81,17 @@ export function AppSidebar() {
         }
       }}
     >
-      <SidebarHeader className="h-app-header shrink-0 flex-row items-center justify-between gap-2 border-b border-sidebar-border px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2">
+      <SidebarHeader className="h-app-header shrink-0 flex-row items-center justify-between gap-2 border-b border-sidebar-border px-3">
         <Link
           href="/dashboard"
           aria-label="E-Gudang — Dashboard"
           onClick={closeMobileMenu}
-          className="flex min-w-0 items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sidebar-ring"
+          className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sidebar-ring"
         >
           <span className="flex size-control pointer-coarse:size-control-touch shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Warehouse className="size-icon-large" aria-hidden="true" />
           </span>
-          <span className="truncate type-card-title group-data-[collapsible=icon]:hidden">
+          <span className="min-w-0 truncate whitespace-nowrap type-card-title transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
             E-Gudang
           </span>
         </Link>
@@ -138,7 +142,7 @@ export function AppSidebar() {
             ))}
           </SidebarMenu>
         </nav>
-        <p className="px-2 py-1 type-caption text-sidebar-foreground/80 group-data-[collapsible=icon]:hidden">
+        <p className="overflow-hidden whitespace-nowrap px-2 py-1 type-caption text-sidebar-foreground/80 transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
           Mode pengembangan
         </p>
       </SidebarFooter>

@@ -32,7 +32,9 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 
 - [ ] Sidebar desktop 256px; collapsed 64px dengan tooltip dan nama aksesibel.
 - [ ] Brand, header, sidebar dan active state mengikuti token monochrome tanpa palette lokal.
-- [ ] Setelah collapse/expand, hard refresh memulihkan preferensi sidebar dari cookie.
+- [ ] Setelah collapse, hard refresh langsung menampilkan sidebar collapsed tanpa sempat expanded. Ulangi saat expanded dan saat berpindah route.
+- [ ] Collapse/expand mempertahankan posisi horizontal ikon navigasi, logo, dan pengaturan; label fade tanpa pindah baris. Panel dan content spacer bergerak serempak selama 200ms.
+- [ ] Uji refresh dengan cache dinonaktifkan dan jaringan lambat: fallback netral boleh muncul, tetapi sidebar tidak boleh muncul dengan state yang salah.
 - [ ] Header 64px; tetap terlihat saat scroll tanpa menutupi konten.
 - [ ] Padding PageContainer 24px desktop / 16px mobile; tidak ada padding ganda.
 - [ ] Uji 320, 375, 768, 1024 dan 1440px; tidak ada scroll horizontal halaman.
@@ -45,6 +47,6 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 ## Batas fase
 
 - Pencarian barang/SKU/barcode menunggu master data, notifikasi stok menunggu inventory engine, role dan akun menunggu autentikasi.
-- Sidebar menggunakan state shadcn/ui dan cookie preferensi desktop. State dipulihkan setelah hydration; pada render server awal sidebar memakai default expanded. Mobile drawer tidak dipulihkan dalam keadaan terbuka.
+- Sidebar menggunakan state shadcn/ui dan cookie preferensi desktop (7 hari). Server layout membaca cookie di dalam Suspense boundary, lalu mengirim defaultOpen yang sama ke client. Tidak ada pemulihan state sidebar setelah hydration. Karena Cache Components tetap aktif, fallback loading netral dapat muncul sebelum shell siap; jangan render sidebar default yang salah. Mobile drawer tidak dipulihkan dalam keadaan terbuka.
 - Tidak ada KPI, transaksi, atau user session palsu.
 - Merge setelah pemeriksaan lokal dan audit visual lulus.
