@@ -1,6 +1,6 @@
 # Phase 1.1 — Monochrome Design System audit
 
-Preview sementara: http://localhost:3000/ (dummy data, tidak menyimpan transaksi).
+Preview Phase 1.1 tersedia pada commit `cae9176d23007ea07d379401f6d0f096edf04c65` di branch design system. Pada branch app layout, root telah diganti dengan redirect. Untuk audit app shell, gunakan [LAYOUT_QA.md](./LAYOUT_QA.md).
 
 ## Pengujian lokal (belum dijalankan pada commit implementasi ini)
 

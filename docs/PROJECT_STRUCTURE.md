@@ -1,11 +1,14 @@
 # E-Gudang — Project Structure
 
-App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase design system dan direktori yang dibuat ketika fiturnya diperlukan.
+App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase app layout dan direktori yang dibuat ketika fiturnya diperlukan.
 
 ```text
 app/
-  (auth)/login/page.tsx
+  (auth)/
+    layout.tsx
+    login/page.tsx
   (dashboard)/
+    layout.tsx
     dashboard/page.tsx
     data-barang/page.tsx
     barang-masuk/page.tsx
@@ -19,6 +22,12 @@ app/
 components/
   ui/
   providers/theme-provider.tsx
+  layout/
+    navigation.ts
+    app-sidebar.tsx
+    app-header.tsx
+    menu-search.tsx
+    theme-switcher.tsx
   shared/
     page-container.tsx
     page-header.tsx
@@ -28,6 +37,10 @@ styles/
   typography.css
 hooks/
 lib/
+  sidebar-preference.ts
+tests/
+  navigation.test.mjs
+  sidebar-preference.test.mjs
 prisma/
   schema.prisma
 docs/
@@ -35,12 +48,13 @@ docs/
   DESIGN.md
   PROJECT_STRUCTURE.md
   DESIGN_SYSTEM_QA.md
+  LAYOUT_QA.md
 AGENTS.md
 prisma7.config.ts
 package.json
 package-lock.json
 ```
 
-Root layout mengelola font dan providers. Route group dashboard akan memiliki app shell pada fase berikutnya. Buat components/layout, app/api, actions, services, schemas, types, tests dan folder lain saat benar-benar diperlukan. Import alias `@/*` mengarah ke root.
+Root layout mengelola font dan providers. Route group dashboard memiliki app shell bersama; route auth memakai layout terpisah. Root sementara mengarahkan ke dashboard. Buat app/api, actions, services, schemas, types dan folder lain saat benar-benar diperlukan. Import alias `@/*` mengarah ke root.
 
 Design tokens adalah sumber nilai CSS; komponen UI hanya mengonsumsi token. Shared components menangani pola aplikasi berulang. Validasi bisnis dan operasi database tetap di server. Prisma client generated tidak dikomit. Tidak ada migration pada fase ini.

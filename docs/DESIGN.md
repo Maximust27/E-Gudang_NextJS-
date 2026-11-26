@@ -211,7 +211,7 @@ Buat shared component ketika dibutuhkan oleh alur nyata. Jangan membangun semua 
 
 - Desktop: sidebar kiri 256px, header 64px, konten utama fleksibel. Sidebar collapsible 64px dengan label yang tetap bisa diakses melalui tooltip/accessible name.
 - Mobile (di bawah breakpoint `md` sebagai baseline): sidebar menjadi Sheet/Drawer, header tetap ringkas, konten menggunakan padding 16px, aksi tidak terpotong.
-- Sidebar: Dashboard; Data Barang, Barang Masuk, Barang Keluar, Stok Opname; Laporan; Pengaturan. Menu aktif satu, sesuai URL dan role.
+- Sidebar: Dashboard; Data Barang, Barang Masuk, Barang Keluar, Stok Opname; Laporan; Pengaturan di area bawah. Navigasi ringkas dengan active surface netral, label jelas, dan satu menu aktif sesuai URL serta role.
 - Header: toggle sidebar, pencarian barang (nama/SKU/barcode), notifikasi, theme toggle, user menu; sembunyikan elemen nonesensial pada layar sempit dengan akses alternatif.
 - Dashboard: empat KPI dalam grid 1 kolom mobile sempit, 2 kolom pada layar menengah, 4 kolom desktop; chart penuh; dua panel performa berdampingan pada desktop dan bertumpuk pada mobile.
 - Halaman tabel: judul/action, toolbar, tabel, pagination. Gunakan horizontal scroll pada container tabel jika diperlukan, bukan scroll horizontal seluruh halaman.
@@ -244,7 +244,7 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 │   ├── ui/                     # Primitive shadcn/ui yang distandardisasi
 │   ├── shared/                 # Komponen aplikasi reusable
 │   ├── providers/              # Theme provider
-│   └── layout/                 # App shell, sidebar, header (fase berikutnya)
+│   └── layout/                 # App shell, sidebar, header, navigasi
 └── lib/utils.ts                # cn() dan helper ringan
 ```
 
@@ -270,6 +270,14 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 - Sidebar mengikuti tema dengan state aktif netral, bukan biru solid. Implementasi app shell di branch terpisah akan menyesuaikan token setelah revisi ini disetujui.
 - Komponen input memakai surface card/transparent, border tetap cukup jelas untuk operasi keyboard dan scanning. Jangan mengecilkan ukuran interaksi untuk menyamai screenshot.
 - Preview dashboard di root hanya fixture visual, tanpa koneksi database dan bukan implementasi dashboard bisnis.
+
+### Implementasi app shell (Phase 2)
+
+- App shell digunakan oleh tujuh route dashboard melalui `app/(dashboard)/layout.tsx`; login memiliki layout terpisah. Root mengarahkan ke dashboard selama autentikasi belum tersedia.
+- `components/layout/navigation.ts` adalah sumber tunggal sidebar, breadcrumb dan pencarian menu. Semua tujuh menu tersedia untuk pengujian; penyaringan role dan otorisasi server menunggu fase autentikasi.
+- Sidebar desktop memakai token 256/64px, mobile memakai Sheet dengan lebar maksimum 18rem, navbar memakai token 64px. Branding memakai primary/primary-foreground, navigasi aktif memakai sidebar-primary/sidebar-primary-foreground. Pengaturan tetap dapat diakses saat collapsed. Preferensi sidebar dibaca dari cookie oleh server sebelum shell dirender, dengan Suspense fallback netral untuk Cache Components; mobile drawer tetap tertutup saat reload. Transisi lebar panel dan spacer 200ms ease-in-out, label fade 150ms. Ikon menempati slot horizontal tetap agar tidak melompat ketika sidebar collapsed. Reduced motion mengikuti preferensi sistem. Padding konten dikelola PageContainer.
+- Pencarian menu berfungsi sebagai navigasi; pencarian nama/SKU/barcode, notifikasi stok dan akun nyata belum terhubung. Tidak ada data operasional atau pengguna palsu.
+- Preview Phase 1.1 digantikan oleh root redirect setelah merge desain; source preview historis tetap tersedia di commit `cae9176`. Pengujian layout mengikuti `LAYOUT_QA.md`.
 
 ## 12. UI/UX review checklist — wajib sebelum merge
 
