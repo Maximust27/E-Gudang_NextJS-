@@ -38,17 +38,26 @@ styles/
 hooks/
 lib/
   sidebar-preference.ts
+  db-client.ts
+  prisma.ts
 tests/
+  design-tokens.test.mjs
+  database-url.test.mjs
   navigation.test.mjs
   sidebar-preference.test.mjs
 prisma/
   schema.prisma
+  migrations/
+  seed.mjs
+  smoke.mjs
 docs/
   PRD.md
   DESIGN.md
   PROJECT_STRUCTURE.md
   DESIGN_SYSTEM_QA.md
   LAYOUT_QA.md
+  ENGINEERING.md
+  DATABASE.md
 AGENTS.md
 prisma7.config.ts
 package.json
@@ -57,4 +66,4 @@ package-lock.json
 
 Root layout mengelola font dan providers. Route group dashboard memiliki app shell bersama; route auth memakai layout terpisah. Root sementara mengarahkan ke dashboard. Buat app/api, actions, services, schemas, types dan folder lain saat benar-benar diperlukan. Import alias `@/*` mengarah ke root.
 
-Design tokens adalah sumber nilai CSS; komponen UI hanya mengonsumsi token. Shared components menangani pola aplikasi berulang. Validasi bisnis dan operasi database tetap di server. Prisma client generated tidak dikomit. Tidak ada migration pada fase ini.
+Design tokens adalah sumber nilai CSS; komponen UI hanya mengonsumsi token. Shared components menangani pola aplikasi berulang. Validasi bisnis dan operasi database tetap di server. Prisma client generated tidak dikomit. Migration disimpan dalam prisma/migrations. Seed referensi dan smoke test database dijalankan secara eksplisit; lihat DATABASE.md.
