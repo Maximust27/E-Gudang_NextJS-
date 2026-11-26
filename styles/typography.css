@@ -4,18 +4,21 @@
     font-size: var(--type-page-title-size);
     line-height: var(--type-page-title-line);
     font-weight: var(--weight-semibold);
+    letter-spacing: var(--type-heading-tracking);
   }
 
   .type-section-title {
     font-size: var(--type-section-title-size);
     line-height: var(--type-section-title-line);
     font-weight: var(--weight-semibold);
+    letter-spacing: var(--type-heading-tracking);
   }
 
   .type-card-title {
     font-size: var(--type-card-title-size);
     line-height: var(--type-card-title-line);
     font-weight: var(--weight-semibold);
+    letter-spacing: var(--type-heading-tracking);
   }
 
   .type-body {
@@ -46,6 +49,7 @@
     font-size: var(--type-kpi-size);
     line-height: var(--type-kpi-line);
     font-weight: var(--weight-semibold);
+    letter-spacing: var(--type-kpi-tracking);
     font-variant-numeric: tabular-nums;
   }
 }
