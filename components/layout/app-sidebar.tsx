@@ -11,14 +11,50 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { getActiveNavigationItem, navigationGroups } from "./navigation"
+import {
+  getActiveNavigationItem,
+  navigationItems,
+  type NavigationItem,
+} from "./navigation"
+
+function NavigationLink({
+  item,
+  active,
+  onNavigate,
+}: {
+  item: NavigationItem
+  active: boolean
+  onNavigate: () => void
+}) {
+  const Icon = item.icon
+
+  return (
+    <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
+      <SidebarMenuButton
+        asChild
+        isActive={active}
+        tooltip={item.label}
+        className="data-active:font-semibold"
+      >
+        <Link
+          href={item.href}
+          aria-label={item.label}
+          aria-current={active ? "page" : undefined}
+          onClick={onNavigate}
+        >
+          <Icon aria-hidden="true" />
+          <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  )
+}
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -46,14 +82,13 @@ export function AppSidebar() {
           href="/dashboard"
           aria-label="E-Gudang — Dashboard"
           onClick={closeMobileMenu}
-          className="flex min-w-0 items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sidebar-ring"
+          className="flex min-w-0 items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sidebar-ring"
         >
-          <span className="flex size-control shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+          <span className="flex size-control shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Warehouse className="size-icon-large" aria-hidden="true" />
           </span>
-          <span className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
-            <span className="type-card-title">E-Gudang</span>
-            <span className="type-caption text-sidebar-foreground/80">Manajemen gudang</span>
+          <span className="truncate type-card-title group-data-[collapsible=icon]:hidden">
+            E-Gudang
           </span>
         </Link>
 
@@ -71,45 +106,41 @@ export function AppSidebar() {
         )}
       </SidebarHeader>
 
-      <SidebarContent className="gap-2 py-2">
-        <nav aria-label="Menu utama" className="flex flex-col gap-2">
-          {navigationGroups.map((group) => (
-            <SidebarGroup key={group.label}>
-              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-1">
-                  {group.items.map((item) => {
-                    const active = activeItem?.href === item.href
-                    const Icon = item.icon
-
-                    return (
-                      <SidebarMenuItem
-                        key={item.href}
-                        className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center"
-                      >
-                        <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                          <Link
-                            href={item.href}
-                            aria-label={item.label}
-                            aria-current={active ? "page" : undefined}
-                            onClick={closeMobileMenu}
-                          >
-                            <Icon aria-hidden="true" />
-                            <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    )
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
+      <SidebarContent className="py-2">
+        <nav aria-label="Menu utama">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-1">
+                {navigationItems.filter((item) => item.placement !== "footer").map((item) => (
+                  <NavigationLink
+                    key={item.href}
+                    item={item}
+                    active={activeItem?.href === item.href}
+                    onNavigate={closeMobileMenu}
+                  />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </nav>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-4 py-3 group-data-[collapsible=icon]:hidden">
-        <p className="type-caption text-sidebar-foreground/80">Mode pengembangan</p>
+      <SidebarFooter className="border-t border-sidebar-border p-2">
+        <nav aria-label="Administrasi">
+          <SidebarMenu className="gap-1">
+            {navigationItems.filter((item) => item.placement === "footer").map((item) => (
+              <NavigationLink
+                key={item.href}
+                item={item}
+                active={activeItem?.href === item.href}
+                onNavigate={closeMobileMenu}
+              />
+            ))}
+          </SidebarMenu>
+        </nav>
+        <p className="px-2 py-1 type-caption text-sidebar-foreground/80 group-data-[collapsible=icon]:hidden">
+          Mode pengembangan
+        </p>
       </SidebarFooter>
     </Sidebar>
   )

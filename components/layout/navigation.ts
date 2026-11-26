@@ -9,10 +9,11 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-type NavigationItem = {
+export type NavigationItem = {
   href: string
   label: string
   icon: LucideIcon
+  placement?: "footer"
 }
 
 type NavigationGroup = {
@@ -42,7 +43,7 @@ export const navigationGroups: NavigationGroup[] = [
     label: "Administrasi",
     items: [
       { href: "/laporan", label: "Laporan", icon: ChartColumn },
-      { href: "/pengaturan", label: "Pengaturan", icon: Settings },
+      { href: "/pengaturan", label: "Pengaturan", icon: Settings, placement: "footer" },
     ],
   },
 ]

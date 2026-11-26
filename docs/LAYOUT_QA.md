@@ -22,6 +22,7 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 - [ ] Root mengarahkan ke /dashboard.
 - [ ] Ketujuh menu mengarah ke route PRD, termasuk /barang-masuk dan /barang-keluar.
 - [ ] Satu menu aktif, selected surface netral, tema light/dark, aria-current sesuai route.
+- [ ] Pengaturan berada di bagian bawah sidebar dan tetap dapat diakses saat collapsed.
 - [ ] Breadcrumb dan judul browser mengikuti halaman.
 - [ ] /login tidak memiliki sidebar atau navbar dashboard.
 - [ ] Pencarian menu dapat difilter, dibuka dengan Enter, ditutup dengan Escape.
@@ -30,6 +31,8 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 ## Layout & design
 
 - [ ] Sidebar desktop 256px; collapsed 64px dengan tooltip dan nama aksesibel.
+- [ ] Brand, header, sidebar dan active state mengikuti token monochrome tanpa palette lokal.
+- [ ] Setelah collapse/expand, hard refresh memulihkan preferensi sidebar dari cookie.
 - [ ] Header 64px; tetap terlihat saat scroll tanpa menutupi konten.
 - [ ] Padding PageContainer 24px desktop / 16px mobile; tidak ada padding ganda.
 - [ ] Uji 320, 375, 768, 1024 dan 1440px; tidak ada scroll horizontal halaman.
@@ -42,6 +45,6 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 ## Batas fase
 
 - Pencarian barang/SKU/barcode menunggu master data, notifikasi stok menunggu inventory engine, role dan akun menunggu autentikasi.
-- Sidebar menggunakan state shadcn/ui; state tetap selama navigasi dashboard, tetapi restoration cookie pada hard refresh belum diterapkan.
+- Sidebar menggunakan state shadcn/ui dan cookie preferensi desktop. State dipulihkan setelah hydration; pada render server awal sidebar memakai default expanded. Mobile drawer tidak dipulihkan dalam keadaan terbuka.
 - Tidak ada KPI, transaksi, atau user session palsu.
 - Merge setelah pemeriksaan lokal dan audit visual lulus.

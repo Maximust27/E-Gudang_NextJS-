@@ -39,7 +39,7 @@ export function AppHeader() {
     <header className="sticky top-0 z-20 flex h-app-header shrink-0 items-center justify-between gap-2 border-b border-border bg-card px-4 md:px-6">
       <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger id="app-sidebar-trigger" type="button" />
-        <Breadcrumb className="hidden min-w-0 sm:block">
+        <Breadcrumb aria-label="Lokasi halaman" className="hidden min-w-0 sm:block">
           <BreadcrumbList className="flex-nowrap gap-2">
             <BreadcrumbItem className="hidden shrink-0 lg:inline-flex">
               E-Gudang
@@ -73,7 +73,7 @@ export function AppHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button type="button" variant="ghost" size="icon" aria-label="Menu akun">
-              <Avatar size="sm">
+              <Avatar>
                 <AvatarFallback><UserRound className="size-icon-inline" aria-hidden="true" /></AvatarFallback>
               </Avatar>
             </Button>

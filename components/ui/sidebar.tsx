@@ -31,6 +31,25 @@ const SIDEBAR_WIDTH_MOBILE = "min(18rem, 100vw)"
 const SIDEBAR_WIDTH_ICON = "var(--app-sidebar-collapsed-width)"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
+// Restore the saved preference after hydration without changing static routing.
+function readSidebarPreference() {
+  const value = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+    ?.split("=")[1]
+  return value === "true" ? true : value === "false" ? false : null
+}
+
+function subscribeSidebarPreference(onChange: () => void) {
+  window.addEventListener("focus", onChange)
+  return () => window.removeEventListener("focus", onChange)
+}
+
+function getServerSidebarPreference() {
+  return null
+}
+
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
   open: boolean
@@ -70,8 +89,13 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
-  const open = openProp ?? _open
+  const storedOpen = React.useSyncExternalStore(
+    subscribeSidebarPreference,
+    readSidebarPreference,
+    getServerSidebarPreference
+  )
+  const [_open, _setOpen] = React.useState<boolean | null>(null)
+  const open = openProp ?? _open ?? storedOpen ?? defaultOpen
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
@@ -82,7 +106,7 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`
     },
     [setOpenProp, open]
   )
@@ -197,6 +221,8 @@ function Sidebar({
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+              width: "var(--sidebar-width)",
+              maxWidth: "100vw",
             } as React.CSSProperties
           }
           side={side}
@@ -213,7 +239,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
+      className="group peer hidden shrink-0 text-sidebar-foreground md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
