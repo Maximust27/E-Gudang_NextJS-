@@ -1,3 +1,10 @@
+import { PageContainer } from "@/components/shared/page-container"
+import { PageHeader } from "@/components/shared/page-header"
+
 export default function Page() {
-  return <div>Dashboard</div>
+  return (
+    <PageContainer>
+      <PageHeader title="Pengaturan" description="Halaman ini akan diimplementasikan pada fase berikutnya." />
+    </PageContainer>
+  )
 }

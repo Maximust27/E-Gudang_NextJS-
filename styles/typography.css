@@ -1,0 +1,51 @@
+/* Visual hierarchy; use semantic HTML headings independently of style. */
+@layer components {
+  .type-page-title {
+    font-size: var(--type-page-title-size);
+    line-height: var(--type-page-title-line);
+    font-weight: var(--weight-semibold);
+  }
+
+  .type-section-title {
+    font-size: var(--type-section-title-size);
+    line-height: var(--type-section-title-line);
+    font-weight: var(--weight-semibold);
+  }
+
+  .type-card-title {
+    font-size: var(--type-card-title-size);
+    line-height: var(--type-card-title-line);
+    font-weight: var(--weight-semibold);
+  }
+
+  .type-body {
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line);
+    font-weight: var(--weight-regular);
+  }
+
+  .type-label {
+    font-size: var(--type-label-size);
+    line-height: var(--type-label-line);
+    font-weight: var(--weight-medium);
+  }
+
+  .type-caption {
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-line);
+    font-weight: var(--weight-regular);
+  }
+
+  .type-badge {
+    font-size: var(--type-badge-size);
+    line-height: var(--type-badge-line);
+    font-weight: var(--weight-medium);
+  }
+
+  .type-kpi {
+    font-size: var(--type-kpi-size);
+    line-height: var(--type-kpi-line);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+}
