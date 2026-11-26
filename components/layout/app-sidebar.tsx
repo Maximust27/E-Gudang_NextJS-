@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Warehouse, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +24,10 @@ import {
   type NavigationItem,
 } from "./navigation"
 
+const labelMotion = "transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0"
+const mainItems = navigationItems.filter((item) => item.placement !== "footer")
+const footerItems = navigationItems.filter((item) => item.placement === "footer")
+
 function NavigationLink({
   item,
   active,
@@ -40,7 +45,7 @@ function NavigationLink({
         asChild
         isActive={active}
         tooltip={item.label}
-        className="gap-0! px-0! data-[active=true]:font-semibold"
+        className="gap-0 px-0 data-[active=true]:font-semibold"
       >
         <Link
           href={item.href}
@@ -51,7 +56,7 @@ function NavigationLink({
           <span className="flex w-12 shrink-0 items-center justify-center">
             <Icon aria-hidden="true" />
           </span>
-          <span className="min-w-0 flex-1 truncate whitespace-nowrap transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
+          <span className={cn("min-w-0 flex-1 truncate", labelMotion)}>
             {item.label}
           </span>
         </Link>
@@ -91,7 +96,7 @@ export function AppSidebar() {
           <span className="flex size-control pointer-coarse:size-control-touch shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Warehouse className="size-icon-large" aria-hidden="true" />
           </span>
-          <span className="min-w-0 truncate whitespace-nowrap type-card-title transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
+          <span className={cn("min-w-0 truncate type-card-title", labelMotion)}>
             E-Gudang
           </span>
         </Link>
@@ -115,7 +120,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
-                {navigationItems.filter((item) => item.placement !== "footer").map((item) => (
+                {mainItems.map((item) => (
                   <NavigationLink
                     key={item.href}
                     item={item}
@@ -132,7 +137,7 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-2">
         <nav aria-label="Administrasi">
           <SidebarMenu className="gap-1">
-            {navigationItems.filter((item) => item.placement === "footer").map((item) => (
+            {footerItems.map((item) => (
               <NavigationLink
                 key={item.href}
                 item={item}
@@ -142,7 +147,7 @@ export function AppSidebar() {
             ))}
           </SidebarMenu>
         </nav>
-        <p className="overflow-hidden whitespace-nowrap px-2 py-1 type-caption text-sidebar-foreground/80 transition-opacity duration-150 ease-out delay-75 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:delay-0">
+        <p className={cn("overflow-hidden whitespace-nowrap px-2 py-1 type-caption text-sidebar-foreground/80", labelMotion)}>
           Mode pengembangan
         </p>
       </SidebarFooter>

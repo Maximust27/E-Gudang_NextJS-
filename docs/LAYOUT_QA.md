@@ -50,3 +50,7 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 - Sidebar menggunakan state shadcn/ui dan cookie preferensi desktop (7 hari). Server layout membaca cookie di dalam Suspense boundary, lalu mengirim defaultOpen yang sama ke client. Tidak ada pemulihan state sidebar setelah hydration. Karena Cache Components tetap aktif, fallback loading netral dapat muncul sebelum shell siap; jangan render sidebar default yang salah. Mobile drawer tidak dipulihkan dalam keadaan terbuka.
 - Tidak ada KPI, transaksi, atau user session palsu.
 - Merge setelah pemeriksaan lokal dan audit visual lulus.
+
+### Quality gate — app layout
+
+Run `node --test tests/sidebar-preference.test.mjs tests/navigation.test.mjs` using Node 26 (native TypeScript stripping). These tests cover cookie defaults, restoration, the seven PRD routes, footer placement, nested matching and false prefix matches. Browser QA remains required: collapse animation, exact icon alignment, hard refresh, mobile drawer, focus return and accessibility. The Suspense boundary is retained for request-specific sidebar state; profile before changing its scope.
