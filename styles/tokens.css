@@ -8,6 +8,7 @@
   --popover: var(--card);
   --popover-foreground: var(--card-foreground);
   --primary: #2563eb;
+  --primary-hover: #1d4ed8;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
@@ -27,6 +28,7 @@
   --warning-surface: #fffbeb;
   --warning-foreground: #92400e;
   --destructive: #b91c1c;
+  --destructive-hover: #991b1b;
   --destructive-foreground: #ffffff;
   --danger-surface: #fef2f2;
   --danger-foreground: #991b1b;
@@ -99,6 +101,7 @@
   --popover: var(--card);
   --popover-foreground: var(--card-foreground);
   --primary: #93c5fd;
+  --primary-hover: #bfdbfe;
   --primary-foreground: #0f172a;
   --secondary: #334155;
   --secondary-foreground: #f8fafc;
@@ -117,6 +120,7 @@
   --warning-surface: #78350f;
   --warning-foreground: #fef3c7;
   --destructive: #fca5a5;
+  --destructive-hover: #fecaca;
   --destructive-foreground: #450a0a;
   --danger-surface: #7f1d1d;
   --danger-foreground: #fee2e2;
