@@ -43,3 +43,9 @@ Catatan: inspeksi source tidak menggantikan production build, browser QA atau au
 | Outbound chart / card | 4.48:1 | 5.58:1 |
 
 These ratios were calculated from hex color values, not measured from the rendered page. Verify hover, focus, disabled, opacity, browser rendering and actual chart separation before merge. Sidebar selected state should also be conveyed by aria-current/label in the layout branch.
+
+### Quality gate — design system
+
+`node --test tests/design-tokens.test.mjs` checks the documented token dimensions and WCAG contrast thresholds for selected opaque hex token pairs in both themes. It does not measure rendered opacity, focus, keyboard behavior, or certify accessibility.
+
+Native Button defaults to `type="button"` so secondary actions cannot accidentally submit transaction forms. Use explicit `type="submit"` for intended submissions; composed `asChild` elements retain their native semantics. InputGroupAddon supports both input and textarea focus.
