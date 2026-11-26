@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --test",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
