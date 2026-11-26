@@ -2,8 +2,8 @@
 
 | Atribut | Nilai |
 | --- | --- |
-| Versi | 1.0 — Baseline V1 |
-| Design direction | Modern Minimalist Enterprise |
+| Versi | 1.1 — Monochrome revision |
+| Design direction | Minimalist Monochrome Enterprise |
 | Framework UI | shadcn/ui + Tailwind CSS |
 | Font | Geist |
 | Icon | Lucide React |
@@ -56,10 +56,10 @@ Gunakan skala 4px yang sama dengan skala spacing Tailwind standar (dengan root 1
 | --- | --- | --- |
 | `1` | 4px | Jarak mikro, label dan helper tertentu |
 | `2` | 8px | Ikon-teks, label-input, grup tombol |
-| `3` | 12px | Padding horizontal input, gap item kecil |
-| `4` | 16px | Gap card, gap field, padding halaman mobile |
+| `3` | 12px | Padding horizontal input, gap card/grid, padding card compact |
+| `4` | 16px | Gap field, padding card default, padding halaman mobile |
 | `5` | 20px | Padding alternatif bila diperlukan |
-| `6` | 24px | Padding halaman desktop/card, gap section |
+| `6` | 24px | Padding halaman desktop, gap section |
 | `8` | 32px | Pemisah section besar |
 | `10` | 40px | Jarak layout besar / ukuran control |
 | `12` | 48px | Jarak layout besar / min tinggi row |
@@ -70,8 +70,8 @@ Gunakan skala 4px yang sama dengan skala spacing Tailwind standar (dengan root 1
 | Padding konten desktop | 24px (`p-6`) |
 | Padding konten mobile | 16px (`p-4`) |
 | Jarak antar section | 24px (`gap-6`) |
-| Jarak antar card / grid | 16px (`gap-4`) |
-| Padding card | 24px desktop, 16px mobile |
+| Jarak antar card / grid | 12px (`gap-3`), 16px untuk grid form |
+| Padding card | 16px default, 12px untuk varian `sm` (desktop dan mobile) |
 | Form field gap | 16px |
 | Label ke input | 8px |
 | Error/helper ke field | 4px |
@@ -115,44 +115,44 @@ Pada layar sentuh, target kontrol utama minimal 44 × 44px. Untuk target kecil l
 
 ## 6. Global semantic color system
 
-Palette brand awal: biru profesional, surface netral, sidebar slate gelap pada light maupun dark mode. Definisikan pasangan foreground/background agar status dapat dibaca dengan jelas. Nilai di bawah adalah baseline untuk token; semuanya perlu verifikasi kontras pada kombinasi nyata sebelum release.
+Palette revisi: monochrome netral (putih, abu-abu, charcoal), sidebar mengikuti tema, dan hijau sebagai aksen data. Referensi visual pengguna menjadi inspirasi, bukan salinan identitas produk lain. Primary action menggunakan hitam pada light mode dan putih pada dark mode; menu aktif memakai surface netral lembut. Warna semantik status tetap terpisah. Definisikan pasangan foreground/background agar status dapat dibaca dengan jelas. Nilai di bawah adalah baseline untuk token; semuanya perlu verifikasi kontras pada kombinasi nyata sebelum release.
 
 | Token | Light | Dark | Fungsi |
 | --- | --- | --- | --- |
-| `background` | `#F8FAFC` | `#0F172A` | Area halaman |
-| `foreground` | `#0F172A` | `#F8FAFC` | Teks utama |
-| `card` / `popover` | `#FFFFFF` | `#1E293B` | Surface |
-| `card-foreground` / `popover-foreground` | `#0F172A` | `#F8FAFC` | Teks surface |
-| `primary` | `#2563EB` | `#93C5FD` | Action utama |
-| `primary-foreground` | `#FFFFFF` | `#0F172A` | Teks action |
-| `secondary` / `muted` | `#F1F5F9` | `#334155` | Surface sekunder |
-| `secondary-foreground` | `#0F172A` | `#F8FAFC` | Teks sekunder |
-| `muted-foreground` | `#475569` | `#CBD5E1` | Deskripsi dan metadata |
-| `accent` | `#EFF6FF` | `#334155` | Hover, selected surface |
-| `accent-foreground` | `#1D4ED8` | `#F8FAFC` | Teks accent |
-| `border` | `#E2E8F0` | `#475569` | Divider/card border |
-| `input` | `#64748B` | `#94A3B8` | Batas input yang terlihat |
-| `ring` | `#2563EB` | `#93C5FD` | Keyboard focus |
-| `success` | `#16A34A` | `#4ADE80` | Aksen sukses |
+| `background` | `#F2F2F2` | `#171717` | Area halaman |
+| `foreground` | `#171717` | `#F5F5F5` | Teks utama |
+| `card` / `popover` | `#FFFFFF` | `#222222` | Surface |
+| `card-foreground` / `popover-foreground` | `#171717` | `#F5F5F5` | Teks surface |
+| `primary` | `#171717` | `#F5F5F5` | Action utama |
+| `primary-foreground` | `#FFFFFF` | `#171717` | Teks action |
+| `secondary` / `muted` | `#EEEEEE` | `#303030` | Surface sekunder |
+| `secondary-foreground` | `#171717` | `#F5F5F5` | Teks sekunder |
+| `muted-foreground` | `#595959` | `#B0B0B0` | Deskripsi dan metadata |
+| `accent` | `#E8E8E8` | `#333333` | Hover, selected surface |
+| `accent-foreground` | `#171717` | `#F5F5F5` | Teks accent |
+| `border` | `#E4E4E4` | `#373737` | Divider/card border |
+| `input` | `#858585` | `#818181` | Batas input yang terlihat |
+| `ring` | `#171717` | `#F5F5F5` | Keyboard focus |
+| `success` | `#15803D` | `#6ECF97` | Aksen sukses |
 | `success-surface` | `#F0FDF4` | `#14532D` | Badge sukses |
 | `success-foreground` | `#166534` | `#DCFCE7` | Teks sukses |
-| `warning` | `#D97706` | `#FBBF24` | Aksen perhatian |
+| `warning` | `#B45309` | `#FBBF24` | Aksen perhatian |
 | `warning-surface` | `#FFFBEB` | `#78350F` | Badge perhatian |
 | `warning-foreground` | `#92400E` | `#FEF3C7` | Teks perhatian |
 | `destructive` | `#B91C1C` | `#FCA5A5` | Action berbahaya / error |
 | `destructive-foreground` | `#FFFFFF` | `#450A0A` | Teks action berbahaya |
 | `danger-surface` | `#FEF2F2` | `#7F1D1D` | Badge error / expired |
 | `danger-foreground` | `#991B1B` | `#FEE2E2` | Teks error |
-| `sidebar` | `#0F172A` | `#0B1220` | Surface sidebar |
-| `sidebar-foreground` | `#E2E8F0` | `#E2E8F0` | Teks sidebar |
-| `sidebar-primary` | `#2563EB` | `#2563EB` | Menu aktif |
-| `sidebar-primary-foreground` | `#FFFFFF` | `#FFFFFF` | Teks menu aktif |
-| `sidebar-accent` | `#1E293B` | `#1E293B` | Hover sidebar |
-| `sidebar-accent-foreground` | `#F8FAFC` | `#F8FAFC` | Teks hover sidebar |
-| `sidebar-border` | `#334155` | `#334155` | Divider sidebar |
-| `sidebar-ring` | `#93C5FD` | `#93C5FD` | Focus sidebar |
-| `chart-1` | `#2563EB` | `#60A5FA` | Barang masuk |
-| `chart-2` | `#0F766E` | `#2DD4BF` | Barang keluar |
+| `sidebar` | `#FCFCFC` | `#1C1C1C` | Surface sidebar |
+| `sidebar-foreground` | `#404040` | `#D4D4D4` | Teks sidebar |
+| `sidebar-primary` | `#EBEBEB` | `#363636` | Menu aktif |
+| `sidebar-primary-foreground` | `#171717` | `#FAFAFA` | Teks menu aktif |
+| `sidebar-accent` | `#F0F0F0` | `#2B2B2B` | Hover sidebar |
+| `sidebar-accent-foreground` | `#171717` | `#F5F5F5` | Teks hover sidebar |
+| `sidebar-border` | `#E4E4E4` | `#373737` | Divider sidebar |
+| `sidebar-ring` | `#525252` | `#D4D4D4` | Focus sidebar |
+| `chart-1` | `#16834A` | `#6ACF95` | Barang masuk |
+| `chart-2` | `#777777` | `#999999` | Barang keluar |
 
 Gunakan aksen `success`/`warning` untuk ikon/grafik yang telah diuji; gunakan pasangan `*-surface` dan `*-foreground` untuk badge dan teks status. Jangan mengasumsikan teks putih dapat dibaca di semua aksen. `border` untuk divider dekoratif tidak selalu cukup untuk batas kontrol; gunakan `input`/focus ring dan verifikasi kontras komponen interaktif.
 
@@ -257,18 +257,27 @@ Breakpoint standar Tailwind dipakai secara konsisten (`sm`, `md`, `lg`, `xl`); j
 
 ### Catatan implementasi Phase 1
 
-- Token tambahan `primary-hover` dan `destructive-hover` menjaga kontras teks saat hover. Light: #1D4ED8 / #991B1B; dark: #BFDBFE / #FECACA.
+- Token tambahan `primary-hover` dan `destructive-hover` menjaga kontras teks saat hover. Light: #333333 / #991B1B; dark: #D9D9D9 / #FECACA.
 - Varian ukuran Nova tetap tersedia untuk kompatibilitas. Ukuran ringkas hanya dipakai untuk pagination, kalender, kontrol tertanam dan konteks padat yang memang memerlukannya. Kontrol utama menggunakan token 40px, atau minimal 44px pada perangkat pointer coarse.
 - Preview sementara tersedia di `/` selama audit fase ini. Data pada preview adalah dummy dan tidak terhubung database. Setelah disetujui, ganti root preview saat implementasi app shell.
 - Validasi scanner, transaksi, dan autentikasi belum berlaku pada fase desain.
 
-### Catatan implementasi Phase 2
+### Revisi visual monochrome (Phase 1.1)
 
-- App shell diterapkan melalui `app/(dashboard)/layout.tsx`. Route login berada di layout terpisah tanpa sidebar. Root mengarahkan ke dashboard selama autentikasi belum tersedia.
-- Konfigurasi navigasi di `components/layout/navigation.ts` menjadi sumber sidebar, breadcrumb dan pencarian menu. Seluruh tujuh menu tersedia selama mode pengembangan; penyaringan role dan otorisasi server mengikuti fase autentikasi.
-- Sidebar desktop menggunakan token 256/64px; mobile menggunakan Sheet dengan lebar maksimum 18rem agar navigasi nyaman. Header memakai token 64px. Tidak ada padding halaman ganda.
-- Pencarian menu berfungsi sebagai navigasi sementara; pencarian nama/SKU/barcode, notifikasi stok, dan akun nyata belum terhubung. Tidak ada angka notifikasi atau data pengguna fiktif.
-- Preview desain Phase 1 diganti dengan root redirect setelah desain disetujui. Lihat `LAYOUT_QA.md` untuk pengujian fase layout.
+- Pertahankan Geist dan semua ukuran typography, control, sidebar, header, radius serta target aksesibilitas dari baseline. Heading/KPI menggunakan tracking negatif ringan melalui token typography.
+- Card putih di atas canvas netral terang; dark memakai card charcoal yang sedikit lebih terang dari canvas. Border tipis, tanpa shadow dekoratif. Card kompak berpadding 12px; card default 16px. Grid KPI/panel memakai gap 12px.
+- Barang masuk memakai hijau, barang keluar abu-abu; legend dan unit CTN tetap wajib. Hijau bukan berarti transaksi masuk selalu baik, dan abu-abu bukan berarti keluar buruk.
+- Sidebar mengikuti tema dengan state aktif netral, bukan biru solid. Implementasi app shell di branch terpisah akan menyesuaikan token setelah revisi ini disetujui.
+- Komponen input memakai surface card/transparent, border tetap cukup jelas untuk operasi keyboard dan scanning. Jangan mengecilkan ukuran interaksi untuk menyamai screenshot.
+- Preview dashboard di root hanya fixture visual, tanpa koneksi database dan bukan implementasi dashboard bisnis.
+
+### Implementasi app shell (Phase 2)
+
+- App shell digunakan oleh tujuh route dashboard melalui `app/(dashboard)/layout.tsx`; login memiliki layout terpisah. Root mengarahkan ke dashboard selama autentikasi belum tersedia.
+- `components/layout/navigation.ts` adalah sumber tunggal sidebar, breadcrumb dan pencarian menu. Semua tujuh menu tersedia untuk pengujian; penyaringan role dan otorisasi server menunggu fase autentikasi.
+- Sidebar desktop memakai token 256/64px, mobile memakai Sheet dengan lebar maksimum 18rem, navbar memakai token 64px. Padding konten dikelola PageContainer.
+- Pencarian menu berfungsi sebagai navigasi; pencarian nama/SKU/barcode, notifikasi stok dan akun nyata belum terhubung. Tidak ada data operasional atau pengguna palsu.
+- Preview Phase 1.1 digantikan oleh root redirect setelah merge desain; source preview historis tetap tersedia di commit `cae9176`. Pengujian layout mengikuti `LAYOUT_QA.md`.
 
 ## 12. UI/UX review checklist — wajib sebelum merge
 

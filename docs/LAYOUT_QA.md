@@ -2,7 +2,7 @@
 
 ## Scope
 
-App shell responsif memakai design system yang sudah disetujui pada Phase 1. Tidak ada dependency tambahan, perubahan schema, atau implementasi bisnis. Seluruh menu tersedia untuk pengujian; ini bukan otorisasi produksi.
+App shell responsif memakai design system yang sudah disetujui pada Phase 1.1 (monochrome). Tidak ada dependency tambahan, perubahan schema, atau implementasi bisnis. Seluruh menu tersedia untuk pengujian; ini bukan otorisasi produksi.
 
 ## Pengujian lokal
 
@@ -21,7 +21,7 @@ Buka http://localhost:3000. Hasil build dan pengujian browser untuk commit fase 
 
 - [ ] Root mengarahkan ke /dashboard.
 - [ ] Ketujuh menu mengarah ke route PRD, termasuk /barang-masuk dan /barang-keluar.
-- [ ] Satu menu aktif, warna primary blue, aria-current sesuai route.
+- [ ] Satu menu aktif, selected surface netral, tema light/dark, aria-current sesuai route.
 - [ ] Breadcrumb dan judul browser mengikuti halaman.
 - [ ] /login tidak memiliki sidebar atau navbar dashboard.
 - [ ] Pencarian menu dapat difilter, dibuka dengan Enter, ditutup dengan Escape.
