@@ -5,7 +5,12 @@ import { PrismaClient } from "../generated/prisma/client.ts"
 export function parseDatabaseUrl(value: string | undefined) {
   if (!value) throw new Error("DATABASE_URL is required")
 
-  const url = new URL(value)
+  let url: URL
+  try {
+    url = new URL(value)
+  } catch {
+    throw new Error("DATABASE_URL is not a valid URL")
+  }
   const database = decodeURIComponent(url.pathname.slice(1))
   if (
     url.protocol !== "mysql:" ||

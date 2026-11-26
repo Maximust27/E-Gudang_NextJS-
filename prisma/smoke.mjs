@@ -53,6 +53,7 @@ try {
         idempotencyKey: marker,
         payloadHash: createHash("sha256").update(marker).digest("hex"),
       }
+      await assert.rejects(tx.transaction.create({ data: { ...posting, number: inboundNumber + "-invalid", idempotencyKey: null } }))
       const inbound = await tx.transaction.create({ data: posting })
       await assert.rejects(tx.transaction.create({ data: { ...posting, number: inboundNumber + "-retry" } }))
       const item = await tx.transactionItem.create({ data: { transactionId: inbound.id, productId: product.id, quantity: 10 } })
@@ -69,12 +70,24 @@ try {
       const movement = { transactionItemId: item.id, batchId: batch.id, signedDelta: 10, qtyBefore: 0, qtyAfter: 10 }
       await tx.stockMovement.create({ data: movement })
       await assert.rejects(tx.stockMovement.create({ data: movement }))
+      const extraItem = await tx.transactionItem.create({ data: { transactionId: inbound.id, productId: product.id, quantity: 1 } })
+      await assert.rejects(tx.stockMovement.create({ data: { ...movement, transactionItemId: extraItem.id, qtyAfter: 11 } }))
       await assert.rejects(tx.inventoryBatch.update({ where: { id: batch.id }, data: { qtyOnHand: -1 } }))
       await assert.rejects(tx.inventoryBatch.update({ where: { id: batch.id }, data: { isBlocked: true } }))
       const stored = await tx.inventoryBatch.findUniqueOrThrow({ where: { id: batch.id } })
       assert.equal(stored.qtyOnHand, 10)
       assert.equal(stored.receivedAt.toISOString(), receivedAt.toISOString())
       assert.equal(stored.expiryDate?.toISOString(), expiryDate.toISOString())
+
+      const reversalData = {
+        number: "REV-" + marker,
+        type: "REVERSAL",
+        userId: user.id,
+        reversalOfId: inbound.id,
+        reason: "Test uniqueness only",
+      }
+      await tx.transaction.create({ data: reversalData })
+      await assert.rejects(tx.transaction.create({ data: { ...reversalData, number: "REV2-" + marker } }))
 
       const opname = await tx.stockOpname.create({ data: { number: "SO-" + marker, createdById: user.id } })
       const countData = { opnameId: opname.id, batchId: batch.id, snapshotQty: 10, snapshotVersion: batch.version, countedQty: 0 }
