@@ -193,7 +193,7 @@ function Sidebar({
           data-mobile="true"
           className="data-[side=left]:w-(--sidebar-width) data-[side=right]:w-(--sidebar-width) border-sidebar-border bg-sidebar p-0 text-sidebar-foreground"
           showCloseButton={false}
-          onCloseAutoFocus={mobileCloseAutoFocus}}
+          onCloseAutoFocus={mobileCloseAutoFocus}
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
