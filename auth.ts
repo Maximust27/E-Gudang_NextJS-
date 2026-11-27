@@ -6,15 +6,9 @@ import { authorizeCredentials } from "@/lib/auth/authorize"
 
 declare module "next-auth" {
   interface Session {
-    user: DefaultSession["user"] & { id?: string; sessionVersion?: number }
+    user: DefaultSession["user"] & { id: string; sessionVersion?: number }
   }
   interface User {
-    sessionVersion?: number
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
     sessionVersion?: number
   }
 }
@@ -34,8 +28,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token
     },
     session({ session, token }) {
-      session.user.id = token.sub
-      session.user.sessionVersion = token.sessionVersion
+      session.user.id = token.sub ?? ""
+      session.user.sessionVersion = typeof token.sessionVersion === "number"
+        ? token.sessionVersion
+        : undefined
       return session
     },
   },

@@ -32,7 +32,7 @@ Phase 4 candidate. Follows PRD internal Credentials, ADMIN and OPERATOR. No publ
    ```
    Verify the database migration state. Test the new migration on e_gudang_test first using the temporary environment override from DATABASE.md. Apply migrations with `npm run db:migrate` only; do not reset a database with data.
 3. Generate a random secret using `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`. Copy it into the private .env as AUTH_SECRET and set AUTH_URL=http://localhost:3000. Do not share the secret or commit .env. Each environment gets its own secret.
-4. Run `npm run auth:create-user` in an interactive terminal. Enter email, name, role ADMIN or OPERATOR, then password twice (input hidden). CLI is for trusted provisioning with DB access, not public registration. Duplicate email is rejected; it never overwrites existing accounts. Use separate test accounts and never put passwords in command arguments. Run after Prisma generation and migrations.
+4. Run `node scripts/create-user.mjs` directly in an interactive terminal (or `npm run auth:create-user` if npm forwards the terminal correctly). The script checks the target database and authentication migration before prompting. Enter email, name, role ADMIN or OPERATOR, then password twice (input hidden). CLI is for trusted provisioning with DB access, not public registration. Duplicate email is rejected; it never overwrites existing accounts. Use separate test accounts and never put passwords in command arguments. Run after Prisma generation and migrations.
 5. `npm run dev`, open http://localhost:3000. Anonymous dashboard redirects to login. Test both roles; logout before switching accounts.
 
 ## Automated verification
