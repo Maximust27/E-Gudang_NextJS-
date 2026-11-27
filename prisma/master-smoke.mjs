@@ -44,6 +44,9 @@ try {
   await assert.rejects(save(actor, { ...input, sku: label + "-2" }), (error) => error?.code === "P2002")
   await assert.rejects(save(actor, { ...input, ...edit(product), methodOverride: "FIFO" }), (error) => error instanceof MasterError && /FEFO/.test(error.message))
   await assert.rejects(save(actor, { ...input, ...edit(product), updatedAt: "2020-01-01T00:00:00.000Z" }), (error) => error instanceof MasterError && /berubah/.test(error.message))
+  await save(actor, { ...input, ...edit(product), name: label + " edited" })
+  product = await prisma.product.findUniqueOrThrow({ where: { sku: label } })
+  assert.equal(product.name, label + " edited")
   await assert.rejects(save(actor, { ...categoryInput, ...edit(category), isActive: "inactive" }), (error) => error instanceof MasterError && /SKU aktif/.test(error.message))
 
   const now = new Date()
@@ -99,7 +102,7 @@ try {
   assert.ok(!serialized.includes(password))
   assert.ok(!serialized.includes(updated.passwordHash))
   assert.ok(!serialized.includes('"passwordHash"'))
-  assert.equal(logs.filter((log) => log.entityType === "Product").length, 1)
+  assert.equal(logs.filter((log) => log.entityType === "Product").length, 2)
   assert.ok(logs.some((log) => log.entityType === "User" && log.metadata?.passwordReset === true && log.metadata?.sessionsRevoked === true))
   console.log("Master smoke passed: authorization, unique keys, versions, stock/method guards, eligibility, user revocation, settings and audit.")
 } finally {
