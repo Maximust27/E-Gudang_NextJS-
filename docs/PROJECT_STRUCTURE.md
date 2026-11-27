@@ -32,7 +32,6 @@ components/
     filter-select.tsx
     import-dialog.tsx
     label-print.tsx
-    label-print.module.css
   providers/theme-provider.tsx
   layout/
     navigation.ts
@@ -48,6 +47,7 @@ components/
 styles/
   tokens.css
   typography.css
+  label-print.css
 hooks/
 lib/
   sidebar-preference.ts

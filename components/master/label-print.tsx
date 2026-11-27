@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { barcodeFits, barcodeRuns, barcodeWidthMm, labelMaxCopies, labelModuleMm, labelQuietModules, parseCopies, type LabelWidth } from "@/lib/barcode/encode"
-import styles from "./label-print.module.css"
 
 export type LabelData = {
   kind: "SKU" | "BATCH"
@@ -25,17 +24,17 @@ function PrintedLabel({ data, bits, width }: { data: LabelData; bits: string; wi
   const modules = bits.length + labelQuietModules * 2
   const physicalWidth = barcodeWidthMm(bits)
   return (
-    <article className={styles.label} style={{ width: width + "mm" }}>
-      <div className={styles.labelHeading}><span>E-Gudang</span><span>{data.kind === "SKU" ? "KARTON / SKU" : "BATCH / LOT"}</span></div>
-      <p className={styles.product}>{data.productName}</p>
-      <p className={styles.meta}>SKU: {data.sku}</p>
-      {data.kind === "BATCH" && <p className={styles.meta}>{data.location ? "Rak: " + data.location : "Rak: —"} · Exp: {data.expiry ?? "—"}</p>}
-      <div className={styles.barcode}>
+    <article className="eg-print-label" style={{ width: width + "mm" }}>
+      <div className="eg-print-label-heading"><span>E-Gudang</span><span>{data.kind === "SKU" ? "KARTON / SKU" : "BATCH / LOT"}</span></div>
+      <p className="eg-print-product">{data.productName}</p>
+      <p className="eg-print-meta">SKU: {data.sku}</p>
+      {data.kind === "BATCH" && <p className="eg-print-meta">{data.location ? "Rak: " + data.location : "Rak: —"} · Exp: {data.expiry ?? "—"}</p>}
+      <div className="eg-print-barcode">
         <svg role="img" aria-label={"Barcode " + data.code} viewBox={"0 0 " + modules + " " + (18 / labelModuleMm)} width={physicalWidth + "mm"} height="18mm" shapeRendering="crispEdges">
           <rect x="0" y="0" width={modules} height={18 / labelModuleMm} fill="white" />
           {barcodeRuns(bits).map((run) => <rect key={run.x} x={run.x} width={run.width} height={18 / labelModuleMm} fill="black" />)}
         </svg>
-        <p className={styles.code}>{data.code}</p>
+        <p className="eg-print-code">{data.code}</p>
       </div>
     </article>
   )
@@ -51,8 +50,8 @@ export function LabelPrint({ data, bits, error }: { data: LabelData; bits: strin
   const perSheet = width === 90 ? 10 : 5
 
   return (
-    <main className={styles.page}>
-      <div className={styles.controls}>
+    <main data-label-print="" className="eg-print-page">
+      <div className="eg-print-controls print:hidden">
         <Button asChild variant="ghost" size="sm"><Link href={"/data-barang/" + data.productId}><ArrowLeft aria-hidden="true" />Kembali ke detail barang</Link></Button>
         <Card>
           <CardHeader><CardTitle>Cetak label {data.kind === "SKU" ? "SKU" : "batch"}</CardTitle></CardHeader>
@@ -83,9 +82,9 @@ export function LabelPrint({ data, bits, error }: { data: LabelData; bits: strin
         </Card>
         <h2 className="type-section-title">Pratinjau label</h2>
       </div>
-      {ready && <div className={styles.previewScroll}>
+      {ready && <div className="eg-print-preview">
         {Array.from({ length: Math.ceil(copies / perSheet) }, (_, sheet) => (
-          <div key={sheet} className={styles.sheet} style={{ gridTemplateColumns: "repeat(" + (width === 90 ? 2 : 1) + ", " + width + "mm)" }}>
+          <div key={sheet} className="eg-print-sheet" style={{ gridTemplateColumns: "repeat(" + (width === 90 ? 2 : 1) + ", " + width + "mm)" }}>
             {Array.from({ length: Math.min(perSheet, copies - sheet * perSheet) }, (_, index) => <PrintedLabel key={index} data={data} bits={bits} width={width} />)}
           </div>
         ))}
