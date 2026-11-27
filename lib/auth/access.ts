@@ -2,12 +2,16 @@ import "server-only"
 
 import { cache } from "react"
 import { notFound, redirect } from "next/navigation"
+import { connection } from "next/server"
 import { auth } from "@/auth"
 import { can, type Permission } from "@/lib/permissions"
 import { getPrisma } from "@/lib/prisma"
 
 // Request/render-scoped only; never cache authorization across requests.
 export const getCurrentUser = cache(async () => {
+  // Auth.js may access crypto before reading request headers. Keep all
+  // session work behind the request boundary when Cache Components is enabled.
+  await connection()
   const session = await auth()
   const id = Number(session?.user?.id)
   const version = session?.user?.sessionVersion

@@ -70,7 +70,9 @@ async function signIn(client, email, value, expected) {
 async function page(client, path) {
   const response = await client.request(path)
   assert.ok(response.status < 500, "Page must not return a server error")
-  return { location: response.headers.get("location") ?? "", body: await response.text() }
+  const body = await response.text()
+  assert.doesNotMatch(body, /blocking-prerender-crypto|encountered the unstable value/i, "Auth pages must render without blocking prerender errors")
+  return { location: response.headers.get("location") ?? "", body }
 }
 
 try {
@@ -87,6 +89,7 @@ try {
   await prisma.loginRateLimit.deleteMany({ where: { key: { in: keys } } })
 
   const guest = browser()
+  assert.ok((await page(guest, "/login")).body.includes("Masuk ke akun"))
   const denied = await page(guest, "/dashboard")
   assert.ok((denied.location + denied.body).includes("/login"))
   assert.ok(!denied.body.includes("Ringkasan operasional gudang."))
