@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Stok Opname" }
 export default function Page() {
   return (
     <Suspense fallback={null}>
-      <FeaturePlaceholder title="Stok Opname" description="Hitung dan cocokkan stok fisik dengan catatan sistem." permission="opname:count" />
+      <FeaturePlaceholder title="Stok Opname" description="Hitung dan cocokkan stok fisik dengan catatan sistem." route="/stok-opname" />
     </Suspense>
   )
 }

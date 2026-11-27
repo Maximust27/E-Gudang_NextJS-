@@ -7,6 +7,12 @@ on:
       - "prisma/**"
       - "lib/db-client.ts"
       - "lib/prisma.ts"
+      - "lib/auth/**"
+      - "lib/permissions.ts"
+      - "auth.ts"
+      - "app/**"
+      - "components/auth/**"
+      - "components/layout/**"
       - "prisma7.config.ts"
       - "package*.json"
       - ".github/workflows/database.yml"
@@ -59,3 +65,18 @@ jobs:
       - run: npm run db:seed
       - run: npm run db:smoke
       - run: npm run db:status
+      - name: Build and exercise authentication on isolated database
+        env:
+          AUTH_URL: http://127.0.0.1:3000
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: |
+          export AUTH_SECRET="$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("base64url"))')"
+          npm run build
+          npm run start -- --hostname 127.0.0.1 --port 3000 > /tmp/e-gudang-auth.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:3000/api/auth/csrf > /dev/null; then break; fi
+            sleep 1
+          done
+          npm run auth:smoke || { cat /tmp/e-gudang-auth.log; exit 1; }

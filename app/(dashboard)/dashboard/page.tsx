@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Dashboard" }
 export default function Page() {
   return (
     <Suspense fallback={null}>
-      <FeaturePlaceholder title="Dashboard" description="Ringkasan operasional gudang." permission="dashboard:view" />
+      <FeaturePlaceholder title="Dashboard" description="Ringkasan operasional gudang." route="/dashboard" />
     </Suspense>
   )
 }

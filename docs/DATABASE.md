@@ -1,6 +1,6 @@
 # E-Gudang — Database V1
 
-Status: candidate untuk audit Phase 3. Acuan: [PRD.md](./PRD.md), khususnya bagian 4–6. Provider Prisma `mysql`, adapter MariaDB, satu gudang. Tidak ada migration yang dijalankan pada database operasional oleh implementor. CI memakai database MariaDB 11.4 terisolasi; versi Laragon yang digunakan reviewer harus diverifikasi.
+Status: baseline Phase 3 telah di-merge; Phase 4 menambah kontrak keamanan autentikasi. Acuan: [PRD.md](./PRD.md), khususnya bagian 4–6. Provider Prisma `mysql`, adapter MariaDB, satu gudang. Tidak ada migration yang dijalankan pada database operasional oleh implementor. CI memakai database MariaDB 11.4 terisolasi; versi Laragon yang digunakan reviewer harus diverifikasi.
 
 ## Entity relationship diagram
 
@@ -23,6 +23,11 @@ erDiagram
   INVENTORY_BATCHES ||--o{ STOCK_OPNAME_ITEMS : measured
   TRANSACTIONS o|--o| TRANSACTIONS : reverses
   STOCK_OPNAMES o|--o| TRANSACTIONS : adjusts
+  LOGIN_RATE_LIMITS {
+    string key PK
+    int attempts
+    datetime reset_at
+  }
   SETTINGS {
     string key PK
     int value
@@ -33,7 +38,7 @@ erDiagram
 
 | Model | Peran |
 | --- | --- |
-| User | Email unik, password hash, ADMIN/OPERATOR, aktif/nonaktif. Auth belum diimplementasikan; tidak ada akun default. |
+| User | Email unik, password hash, ADMIN/OPERATOR, aktif/nonaktif. Session version untuk pencabutan akses; tidak ada akun default. |
 | Category | Nama unik, metode default FIFO/FEFO. |
 | Product | SKU/barcode unik, kategori, override metode opsional, isi CTN opsional, minimum stok. Tidak ada saldo total. |
 | Supplier | Nama, kode opsional unik, status. Supplier wajib untuk posting IN. |
@@ -46,6 +51,7 @@ erDiagram
 | StockOpnameItem | Satu baris per lot per sesi; snapshot saldo/version, hitungan nullable sampai diisi, alasan selisih. |
 | ActivityLog | User, aksi, entity reference, metadata JSON tanpa rahasia. |
 | Setting | Key dan integer positif; near_expiry_days dan dead_stock_days. |
+| LoginRateLimit | Counter dan batas waktu login; hanya key global, unknown, dan ID user yang dikenal. |
 
 Semua ID numerik menggunakan signed INT auto increment (kapasitas sekitar 2,1 miliar per tabel; tinjau jika skala berubah). PK Setting adalah string key. Kolom teks berukuran terbatas bila relevan; barcode string tidak menghilangkan nol depan. MariaDB menggunakan InnoDB dan utf8mb4_unicode_ci; kode unik bersifat case-insensitive, normalisasi trim/kasus dilakukan pada validasi fitur. Namespace `LOT-` dicadangkan untuk kode internal; barcode SKU tidak boleh menggunakan prefix tersebut. Foto/brand opsional ditunda sampai benar-benar diperlukan. Tidak ada serial karton, tabel warehouse, purchase order, session Auth.js atau tabel alokasi tambahan.
 
@@ -114,3 +120,7 @@ Migration SQL awal disusun dari schema dengan CHECK tambahan; belum dihasilkan o
 - [ ] Seed idempotent; tanpa akun default atau stok dummy persisten.
 - [ ] Review ERD, constraint, index, dan kontrak engine terhadap PRD.
 - [ ] PR di-review sebelum merge. Auth, master CRUD dan inventory engine adalah fase berikutnya.
+
+## Phase 4 — migration keamanan
+
+`20261127000000_auth_security` menambah kolom `users.session_version` dan tabel `login_rate_limits`. Migration inventaris awal tidak diubah. Lihat [AUTH.md](./AUTH.md) untuk kontrak dan pengujian autentikasi.

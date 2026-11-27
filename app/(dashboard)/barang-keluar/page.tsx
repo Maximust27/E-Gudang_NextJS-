@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Barang Keluar" }
 export default function Page() {
   return (
     <Suspense fallback={null}>
-      <FeaturePlaceholder title="Barang Keluar" description="Kelola pengeluaran barang berdasarkan FIFO dan FEFO." permission="outbound:post" />
+      <FeaturePlaceholder title="Barang Keluar" description="Kelola pengeluaran barang berdasarkan FIFO dan FEFO." route="/barang-keluar" />
     </Suspense>
   )
 }

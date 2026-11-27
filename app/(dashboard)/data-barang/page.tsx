@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Data Barang" }
 export default function Page() {
   return (
     <Suspense fallback={null}>
-      <FeaturePlaceholder title="Data Barang" description="Kelola informasi SKU dan inventaris gudang." permission="products:view" />
+      <FeaturePlaceholder title="Data Barang" description="Kelola informasi SKU dan inventaris gudang." route="/data-barang" />
     </Suspense>
   )
 }

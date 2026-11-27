@@ -6,7 +6,7 @@ import { Warehouse, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { can, type Role } from "@/lib/permissions"
+import { can, routePermissions, type Role } from "@/lib/permissions"
 import {
   Sidebar,
   SidebarContent,
@@ -121,7 +121,7 @@ export function AppSidebar({ role }: { role: Role }) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
-                {mainItems.filter((item) => can(role, item.permission)).map((item) => (
+                {mainItems.filter((item) => can(role, routePermissions[item.href])).map((item) => (
                   <NavigationLink
                     key={item.href}
                     item={item}
@@ -138,7 +138,7 @@ export function AppSidebar({ role }: { role: Role }) {
       <SidebarFooter className="border-t border-sidebar-border p-2">
         <nav aria-label="Administrasi">
           <SidebarMenu className="gap-1">
-            {footerItems.filter((item) => can(role, item.permission)).map((item) => (
+            {footerItems.filter((item) => can(role, routePermissions[item.href])).map((item) => (
               <NavigationLink
                 key={item.href}
                 item={item}

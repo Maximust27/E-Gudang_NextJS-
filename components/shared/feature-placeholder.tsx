@@ -1,16 +1,16 @@
 import { requirePermission } from "@/lib/auth/access"
-import type { Permission } from "@/lib/permissions"
+import { routePermissions, type WarehouseRoute } from "@/lib/permissions"
 import { PageContainer } from "@/components/shared/page-container"
 import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 // Temporary placeholder only. Real feature pages must authorize their own data access.
-export async function FeaturePlaceholder({ title, description, permission }: {
+export async function FeaturePlaceholder({ title, description, route }: {
   title: string
   description: string
-  permission: Permission
+  route: WarehouseRoute
 }) {
-  await requirePermission(permission)
+  await requirePermission(routePermissions[route])
 
   return (
     <PageContainer>

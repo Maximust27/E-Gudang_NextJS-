@@ -26,6 +26,18 @@ const adminPermissions = [
 
 export type Permission = (typeof adminPermissions)[number]
 
+export const routePermissions = {
+  "/dashboard": "dashboard:view",
+  "/data-barang": "products:view",
+  "/barang-masuk": "inbound:post",
+  "/barang-keluar": "outbound:post",
+  "/stok-opname": "opname:count",
+  "/laporan": "reports:view",
+  "/pengaturan": "settings:manage"
+} as const satisfies Record<string, Permission>
+
+export type WarehouseRoute = keyof typeof routePermissions
+
 const permissions: Record<Role, readonly Permission[]> = {
   ADMIN: adminPermissions,
   OPERATOR: operatorPermissions,
