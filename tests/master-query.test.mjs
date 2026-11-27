@@ -10,6 +10,8 @@ test("query validation bounds parameters and ignores repeated values", () => {
   assert.deepEqual(pageWindow(41, query.page), { total: 41, pages: 3, page: 3, skip: 40, take: 20 })
   assert.equal(parseListQuery({ page: "-1", category: "1.5", q: ["a", "b"], tab: "invalid" }).page, 1)
   assert.equal(parseListQuery({ category: "2147483648" }).categoryId, null)
+  assert.equal(parseListQuery({ category: "all" }).categoryId, null)
+  assert.equal(parseListQuery({ category: "" }).categoryId, null)
   assert.equal(literalSearch("a%_b\\c"), "a\\%\\_b\\\\c")
   assert.equal(listHref("/data-barang", query, 2), "/data-barang?q=0001&status=active&method=FEFO&category=2&sort=code-asc&page=2")
 })

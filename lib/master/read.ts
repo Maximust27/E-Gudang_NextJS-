@@ -28,16 +28,16 @@ export function readCategoryOptions(): Promise<CategoryOption[]> {
 async function readProducts(query: ListQuery): Promise<MasterList> {
   const prisma = getPrisma()
   const contains = literalSearch(query.q)
+  const filters: Prisma.ProductWhereInput[] = []
+  if (query.q) filters.push({ OR: [{ name: { contains } }, { sku: { contains } }, { cartonBarcode: { contains } }] })
+  if (query.method !== "all") filters.push({ OR: [
+    { methodOverride: query.method },
+    { methodOverride: null, category: { defaultMethod: query.method } },
+  ] })
   const where: Prisma.ProductWhereInput = {
     isActive: activeFilter(query),
     categoryId: query.categoryId ?? undefined,
-    AND: [
-      ...(query.q ? [{ OR: [{ name: { contains } }, { sku: { contains } }, { cartonBarcode: { contains } }] }] : []),
-      ...(query.method !== "all" ? [{ OR: [
-        { methodOverride: query.method },
-        { methodOverride: null, category: { defaultMethod: query.method } },
-      ] }] : []),
-    ],
+    AND: filters,
   }
   const window = pageWindow(await prisma.product.count({ where }), query.page)
   const records = await prisma.product.findMany({

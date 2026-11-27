@@ -50,7 +50,7 @@ export function MasterTable({ kind, rows, editable, categories = [] }: {
     if (editable || kind === "product") result.push({
       id: "actions", header: "Aksi",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2 whitespace-nowrap">
+        <div className="flex items-center justify-center gap-2 whitespace-nowrap">
           {kind === "product" && <Button asChild variant="ghost" size="sm"><Link href={"/data-barang/" + row.original.id} aria-label={"Detail " + row.original.name}>Detail</Link></Button>}
           {editable && <MasterEditor kind={kind} record={row.original} categories={categories} />}
         </div>
@@ -63,19 +63,20 @@ export function MasterTable({ kind, rows, editable, categories = [] }: {
   // filtering or pagination over a partial dataset.
   const table = useTable({ features, columns, data: rows, getRowId: (row) => String(row.id) })
   const numeric = (id: string) => kind === "product" && id === "value-1" || kind === "category" && id === "value-1"
+  const columnAlignment = (id: string) => id === "actions" ? "w-px whitespace-nowrap text-center" : numeric(id) ? "text-right" : undefined
 
   return (
     <Table aria-label={kind === "product" ? "Daftar barang" : "Daftar master data"}>
       <TableHeader>
         {table.getHeaderGroups().map((group) => <TableRow key={group.id}>
-          {group.headers.map((header) => <TableHead key={header.id} scope="col" className={numeric(header.column.id) ? "text-right" : undefined}>
+          {group.headers.map((header) => <TableHead key={header.id} scope="col" className={columnAlignment(header.column.id)}>
             {!header.isPlaceholder && <table.FlexRender header={header} />}
           </TableHead>)}
         </TableRow>)}
       </TableHeader>
       <TableBody>
         {table.getRowModel().rows.map((row) => <TableRow key={row.id}>
-          {row.getAllCells().map((cell) => <TableCell key={cell.id} className={numeric(cell.column.id) ? "text-right" : undefined}>
+          {row.getAllCells().map((cell) => <TableCell key={cell.id} className={columnAlignment(cell.column.id)}>
             <table.FlexRender cell={cell} />
           </TableCell>)}
         </TableRow>)}

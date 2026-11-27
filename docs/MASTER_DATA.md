@@ -20,6 +20,11 @@ FEFO category cannot be overridden to FIFO; FIFO category can be overridden to F
 
 Audit log contains actor, UTC timestamp (shown WIB), action, entity ID and allowlisted change metadata. No password, token or hash. List queries use bounded pagination and literal LIKE search. DB collation controls case/accents. Product stock uses grouped DB aggregation for the current page rather than loading all lots. No schema migration or dependency changes.
 
+## UI refinement
+
+- List filter dropdowns reuse the existing Radix/shadcn Select with padded chevron, themed options, selected checkmark and keyboard navigation. GET form submission and server-side filter semantics are unchanged; the category sentinel `all` means no filter.
+- Action columns use content-width sizing with the heading and row buttons centered together. Numeric stock alignment is unchanged. Verify both themes, dropdown keyboard navigation, Apply/Reset and narrow-screen wrapping in the local browser.
+
 ## QA
 
 - Run npm run check (Prisma, typecheck, lint, unit tests, build).

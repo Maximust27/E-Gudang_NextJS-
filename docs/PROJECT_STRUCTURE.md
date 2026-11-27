@@ -28,6 +28,7 @@ components/
     editor.tsx
     master-table.tsx
     list-controls.tsx
+    filter-select.tsx
   providers/theme-provider.tsx
   layout/
     navigation.ts
