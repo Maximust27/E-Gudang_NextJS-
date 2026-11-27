@@ -18,6 +18,7 @@ const prisma = createPrismaClient()
 const marker = randomUUID()
 const password = "test-" + randomUUID()
 const ids = []
+let printCategory, printProduct
 
 function browser() {
   const cookies = new Map()
@@ -85,6 +86,8 @@ try {
     ids.push(user)
   }
   const [admin, operator, inactive] = ids
+  printCategory = await prisma.category.create({ data: { name: "PRINT-" + marker, defaultMethod: "FIFO" } })
+  printProduct = await prisma.product.create({ data: { sku: "PRINT-" + marker, name: "Test print label", cartonBarcode: "00" + marker, categoryId: printCategory.id } })
   const keys = ["global", "unknown", ...ids.map((user) => "user:" + user.id)]
   await prisma.loginRateLimit.deleteMany({ where: { key: { in: keys } } })
 
@@ -99,7 +102,9 @@ try {
   const settings = await page(adminClient, "/pengaturan")
   assert.ok(settings.body.includes("Kelola konfigurasi dan data master gudang."))
   assert.ok((await page(adminClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
-  assert.ok((await page(adminClient, "/data-barang")).body.includes("Tambah Barang"))
+  const adminProducts = await page(adminClient, "/data-barang")
+  assert.ok(adminProducts.body.includes("Tambah Barang"))
+  assert.ok(adminProducts.body.includes("Import Excel"))
 
   const operatorClient = browser()
   await signIn(operatorClient, operator.email, password, operator.email)
@@ -107,6 +112,25 @@ try {
   const products = await page(operatorClient, "/data-barang")
   assert.ok(products.body.includes("Kelola informasi SKU dan inventaris gudang."))
   assert.ok(!products.body.includes("Tambah Barang"))
+  assert.ok(!products.body.includes("Import Excel"))
+  const printPath = "/cetak-label/sku/" + printProduct.id
+  const printed = await page(operatorClient, printPath)
+  assert.match(printed.body, /<main[^>]*data-label-print/)
+  assert.match(printed.body, /class="eg-print-controls print:hidden"/)
+  assert.match(printed.body, /class="eg-print-label"/)
+  const cssUrls = [...new Set([...printed.body.matchAll(/<link\b[^>]*href="([^"]+\.css(?:\?[^"]*)?)"[^>]*>/g)].map((match) => new URL(match[1].replaceAll("&amp;", "&"), base)))].filter((url) => url.origin === base.origin)
+  assert.ok(cssUrls.length, "Print route must include stylesheets")
+  const css = (await Promise.all(cssUrls.map(async (url) => {
+    const response = await operatorClient.request(url.href)
+    assert.equal(response.status, 200)
+    return response.text()
+  }))).join("\n")
+  assert.match(css, /data-label-print/)
+  assert.match(css, /eg-print-controls/)
+  assert.match(css, /eg-print-sheet/)
+  assert.match(css, /@media\s*print/)
+  const printDenied = await page(guest, printPath)
+  assert.ok((printDenied.location + printDenied.body).includes("/login"))
   assert.ok(!(await page(operatorClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
   assert.ok(!(await page(operatorClient, "/pengaturan")).body.includes("Kelola konfigurasi dan data master gudang."))
 
@@ -140,6 +164,8 @@ try {
 
   console.log("Auth smoke passed: login, roles, route guards, inactive users, revocation, signout and throttling.")
 } finally {
+  if (printProduct) await prisma.product.delete({ where: { id: printProduct.id } })
+  if (printCategory) await prisma.category.delete({ where: { id: printCategory.id } })
   await prisma.loginRateLimit.deleteMany({ where: { key: { in: ["global", "unknown", ...ids.map((user) => "user:" + user.id)] } } })
   await prisma.user.deleteMany({ where: { id: { in: ids.map((user) => user.id) } } })
   await prisma.$disconnect()

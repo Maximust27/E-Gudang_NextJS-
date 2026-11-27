@@ -17,6 +17,7 @@ app/
     stok-opname/page.tsx
     laporan/page.tsx
     pengaturan/page.tsx
+  (print)/cetak-label/[kind]/[id]/page.tsx
   api/auth/[...nextauth]/route.ts
   globals.css
   layout.tsx
@@ -29,6 +30,8 @@ components/
     master-table.tsx
     list-controls.tsx
     filter-select.tsx
+    import-dialog.tsx
+    label-print.tsx
   providers/theme-provider.tsx
   layout/
     navigation.ts
@@ -44,6 +47,7 @@ components/
 styles/
   tokens.css
   typography.css
+  label-print.css
 hooks/
 lib/
   sidebar-preference.ts
@@ -51,6 +55,7 @@ lib/
   prisma.ts
   permissions.ts
   inventory/eligibility.ts
+  barcode/encode.ts
   master/
     schema.ts
     query.ts
@@ -58,6 +63,10 @@ lib/
     read.ts
     service.ts
     actions.ts
+    import-schema.ts
+    import-workbook.ts
+    import-service.ts
+    import-actions.ts
   auth/
     access.ts
     actions.ts
@@ -73,6 +82,8 @@ tests/
   permissions.test.mjs
   master-schema.test.mjs
   master-query.test.mjs
+  import-workbook.test.mjs
+  barcode.test.mjs
 prisma/
   schema.prisma
   migrations/
@@ -80,6 +91,7 @@ prisma/
   smoke.mjs
   auth-smoke.mjs
   master-smoke.mjs
+  import-smoke.mjs
 scripts/
   create-user.mjs
 docs/

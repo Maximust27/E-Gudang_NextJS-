@@ -1,0 +1,149 @@
+/* Scoped physical label geometry; use a global stylesheet so the print
+   rules and markup cannot diverge through CSS module name transformation. */
+[data-label-print].eg-print-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  min-width: 0;
+}
+
+[data-label-print] .eg-print-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 54rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
+[data-label-print] .eg-print-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-x: auto;
+}
+
+[data-label-print] .eg-print-sheet {
+  display: grid;
+  justify-content: center;
+  align-items: start;
+  width: max-content;
+  margin-inline: auto;
+  gap: 4mm;
+  padding: 8mm;
+  background: white;
+  color: black;
+}
+
+[data-label-print] .eg-print-label {
+  box-sizing: border-box;
+  height: 50mm;
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+  padding: 2.5mm;
+  border: 0.25mm solid #b3b3b3;
+  background: white;
+  color: black;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+[data-label-print] .eg-print-label-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 2mm;
+  font-size: 8pt;
+  font-weight: 600;
+}
+
+[data-label-print] .eg-print-product {
+  font-size: 10pt;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-label-print] .eg-print-meta {
+  font-size: 8pt;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-label-print] .eg-print-barcode {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7mm;
+  flex-shrink: 0;
+}
+
+[data-label-print] .eg-print-code {
+  font-size: 8pt;
+  font-family: monospace;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+@page eg-gudang-label {
+  size: A4 portrait;
+  margin: 8mm;
+}
+
+@media print {
+  html:has([data-label-print]), body:has([data-label-print]) {
+    background: white !important;
+    color: black !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  [data-label-print].eg-print-page {
+    page: eg-gudang-label;
+    padding: 0;
+    display: block;
+  }
+
+  [data-label-print] .eg-print-controls {
+    display: none !important;
+  }
+
+  [data-label-print] .eg-print-preview {
+    display: block;
+    overflow: visible;
+  }
+
+  [data-label-print] .eg-print-sheet {
+    display: grid;
+    margin-inline: auto;
+    padding: 0;
+    gap: 4mm;
+    break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  [data-label-print] .eg-print-sheet:not(:last-child) {
+    break-after: page;
+  }
+
+  [data-label-print] .eg-print-label {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body:has([data-label-print]) [data-sonner-toaster],
+  body:has([data-label-print]) nextjs-portal {
+    display: none !important;
+  }
+}

@@ -63,7 +63,7 @@ async function saveCategory(tx: Tx, actorId: number, command: Extract<Entity, { 
   await audit(tx, actorId, "Category", id, "UPDATE", data)
 }
 
-async function saveProduct(tx: Tx, actorId: number, command: Extract<Entity, { kind: "product" }>) {
+export async function saveProduct(tx: Tx, actorId: number, command: Extract<Entity, { kind: "product" }>) {
   const { id, sku, name, cartonBarcode, categoryId, methodOverride, piecesPerCarton, minStock, isActive } = command
   const data = { sku, name, cartonBarcode, categoryId, methodOverride, piecesPerCarton, minStock, isActive }
   await tx.$queryRaw`SELECT id FROM categories WHERE id = ${categoryId} FOR UPDATE`
