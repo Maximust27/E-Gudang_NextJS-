@@ -1,6 +1,6 @@
 # E-Gudang — Authentication & Authorization
 
-Phase 4 candidate. Follows PRD internal Credentials, ADMIN and OPERATOR. No public registration, social login or database session adapter. Auth.js v5 beta.32 is pinned for App Router compatibility; bcryptjs 3.0.3 is pinned. Review the prerelease dependency and security advisories before production use. The existing lockfile is updated from a real npm resolution, not handwritten.
+Phase 4 merged. Follows PRD internal Credentials, ADMIN and OPERATOR. No public registration, social login or database session adapter. Auth.js v5 beta.32 is pinned for App Router compatibility; bcryptjs 3.0.3 is pinned. Review the prerelease dependency and security advisories before production use. The existing lockfile is updated from a real npm resolution, not handwritten.
 
 ## Security model
 
@@ -10,7 +10,7 @@ Phase 4 candidate. Follows PRD internal Credentials, ADMIN and OPERATOR. No publ
 - `getCurrentUser` first awaits Next.js `connection()` so Auth.js cryptography runs at request time, not during Cache Components prerendering. It validates the session and loads the current role, active flag and session version from the database; it uses React cache only for the render pass. It returns a DTO without password hash. `requireUser` redirects anonymous/revoked/inactive users. `requirePermission` denies forbidden RSC pages with notFound. Every sensitive server action/handler/data access must call an appropriate server guard and handle 401/403; hiding UI is not authorization.
 - Session version must increment when credentials are reset, user is deactivated/reactivated or all sessions revoked in the future user management phase. Role is read fresh at each secure check. Sign-out clears the browser cookie; it does not by itself revoke a copied JWT. Session version revocation protects app data even if the library's raw session endpoint still sees an encrypted token until expiration.
 - Shell, each placeholder page, and menu search respect the role map. The shared app layout may remain mounted across client navigation; role changes are enforced at protected data/page boundaries and the UI refreshes on reload. No sensitive business data is included in static fallback. Do not rely on layout alone or introduce global cache for user-specific data.
-- No MFA, password reset UI, user CRUD or internet-facing deployment hardening in this phase. Operator account creation via trusted CLI is for local audit; Admin user management belongs to the settings feature.
+- No MFA or internet-facing deployment hardening in Phase 4. Phase 5A adds Admin-only user management and password resets in Pengaturan; see [MASTER_DATA.md](./MASTER_DATA.md). Trusted CLI remains available for initial provisioning.
 
 ## Permission matrix
 

@@ -98,10 +98,16 @@ try {
   await signIn(adminClient, admin.email, password, admin.email)
   const settings = await page(adminClient, "/pengaturan")
   assert.ok(settings.body.includes("Kelola konfigurasi dan data master gudang."))
+  assert.ok((await page(adminClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
+  assert.ok((await page(adminClient, "/data-barang")).body.includes("Tambah Barang"))
 
   const operatorClient = browser()
   await signIn(operatorClient, operator.email, password, operator.email)
   assert.ok((await page(operatorClient, "/dashboard")).body.includes("Ringkasan operasional gudang."))
+  const products = await page(operatorClient, "/data-barang")
+  assert.ok(products.body.includes("Kelola informasi SKU dan inventaris gudang."))
+  assert.ok(!products.body.includes("Tambah Barang"))
+  assert.ok(!(await page(operatorClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
   assert.ok(!(await page(operatorClient, "/pengaturan")).body.includes("Kelola konfigurasi dan data master gudang."))
 
   // Role changes must be enforced even for an existing valid JWT.

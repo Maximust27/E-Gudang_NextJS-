@@ -17,7 +17,8 @@
     "db:seed": "prisma db seed --config prisma7.config.ts",
     "db:smoke": "node prisma/smoke.mjs",
     "auth:create-user": "node scripts/create-user.mjs",
-    "auth:smoke": "node prisma/auth-smoke.mjs"
+    "auth:smoke": "node prisma/auth-smoke.mjs",
+    "master:smoke": "node prisma/master-smoke.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
