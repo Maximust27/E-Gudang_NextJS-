@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { PageContainer } from "@/components/shared/page-container"
 import { PageHeader } from "@/components/shared/page-header"
 import { MasterEditor } from "@/components/master/editor"
+import { ImportDialog } from "@/components/master/import-dialog"
 import { MasterTable } from "@/components/master/master-table"
 import { ListControls, MasterPagination } from "@/components/master/list-controls"
 import { requirePermission } from "@/lib/auth/access"
@@ -20,7 +21,10 @@ async function Products({ searchParams }: { searchParams: Promise<SearchParams> 
   return (
     <PageContainer>
       <PageHeader title="Data Barang" description="Kelola informasi SKU dan inventaris gudang."
-        actions={editable && <MasterEditor kind="product" categories={categories} />} />
+        actions={<>
+          {can(user.role, "products:import") && <ImportDialog categories={categories} />}
+          {editable && <MasterEditor kind="product" categories={categories} />}
+        </>} />
       <div className="flex min-w-0 flex-col gap-3">
         <ListControls key={JSON.stringify(query)} path="/data-barang" query={query} categories={categories} codes />
         <MasterTable kind="product" rows={list.rows} editable={editable} categories={editable ? categories : undefined} />

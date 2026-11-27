@@ -49,7 +49,9 @@ export function readImportWorkbook(workbook: Workbook): ImportRow[] {
   const rows: ImportRow[] = []
   for (let index = 2; index <= sheet.rowCount; index++) {
     const values = importHeaders.map((_, column) => {
-      const value = sheet.getCell(index, column + 1).value
+      const cell = sheet.getCell(index, column + 1)
+      if (cell.isMerged) return false as const
+      const value = cell.value
       if (value === null || value === undefined) return null
       if (typeof value === "string" && value.length <= 512) return value
       if (typeof value === "number" && Number.isFinite(value)) return value

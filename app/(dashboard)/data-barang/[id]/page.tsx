@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Printer } from "lucide-react"
 import { PageContainer } from "@/components/shared/page-container"
 import { PageHeader } from "@/components/shared/page-header"
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,7 @@ async function ProductDetail({ params, searchParams }: Props) {
     <PageContainer>
       <div><Button asChild variant="ghost" size="sm"><Link href="/data-barang"><ArrowLeft aria-hidden="true" />Data Barang</Link></Button></div>
       <PageHeader title={product.name} description={"Detail barang · " + product.sku}
-        actions={<Badge variant={product.isActive ? "success" : "secondary"}>{product.isActive ? "Aktif" : "Nonaktif"}</Badge>} />
+        actions={<><Badge variant={product.isActive ? "success" : "secondary"}>{product.isActive ? "Aktif" : "Nonaktif"}</Badge><Button asChild variant="outline"><Link href={"/cetak-label/sku/" + product.id} target="_blank" rel="noopener noreferrer"><Printer aria-hidden="true" />Cetak barcode SKU</Link></Button></>} />
       <div className="grid gap-3 sm:grid-cols-2">
         <Card><CardHeader><CardTitle>Stok fisik</CardTitle></CardHeader><CardContent><p className="type-kpi">{number(detail.physical)} <span className="type-body">CTN</span></p></CardContent></Card>
         <Card><CardHeader><CardTitle>Stok tersedia</CardTitle></CardHeader><CardContent><p className="type-kpi">{number(detail.available)} <span className="type-body">CTN</span></p><p className="mt-1 type-caption text-muted-foreground">Hanya batch layak keluar</p></CardContent></Card>
@@ -50,7 +50,7 @@ async function ProductDetail({ params, searchParams }: Props) {
       <section className="flex min-w-0 flex-col gap-3">
         <h2 className="type-section-title">Stok per batch</h2>
         <Table aria-label="Stok per batch">
-          <TableHeader><TableRow>{["Kode lot / Batch supplier", "Lokasi", "Diterima", "Expiry", "Fisik (CTN)", "Tersedia (CTN)", "Status"].map((label, index) => <TableHead key={label} scope="col" className={index === 4 || index === 5 ? "text-right" : undefined}>{label}</TableHead>)}</TableRow></TableHeader>
+          <TableHeader><TableRow>{["Kode lot / Batch supplier", "Lokasi", "Diterima", "Expiry", "Fisik (CTN)", "Tersedia (CTN)", "Status", "Aksi"].map((label, index) => <TableHead key={label} scope="col" className={index === 4 || index === 5 ? "text-right" : index === 7 ? "w-px text-center" : undefined}>{label}</TableHead>)}</TableRow></TableHeader>
           <TableBody>
             {detail.batches.map((batch) => {
               const status = batchStatus(batch, candidate, today)
@@ -59,9 +59,10 @@ async function ProductDetail({ params, searchParams }: Props) {
                 <TableCell>{batch.location.code} · {batch.location.name}</TableCell><TableCell>{date.format(batch.receivedAt)}</TableCell><TableCell>{batch.expiryDate ? dateOnly.format(batch.expiryDate) : "—"}</TableCell>
                 <TableCell className="text-right tabular-nums">{number(batch.qtyOnHand)}</TableCell><TableCell className="text-right tabular-nums">{number(status === "Tersedia" ? batch.qtyOnHand : 0)}</TableCell>
                 <TableCell><Badge variant={status === "Tersedia" ? "success" : status === "Habis" ? "secondary" : status === "Expired" || status === "Diblokir" ? "danger" : "warning"}>{status}</Badge></TableCell>
+                <TableCell className="w-px text-center"><Button asChild variant="outline" size="sm"><Link href={"/cetak-label/batch/" + batch.id} target="_blank" rel="noopener noreferrer" aria-label={"Cetak label " + batch.internalLotCode}><Printer aria-hidden="true" />Cetak</Link></Button></TableCell>
               </TableRow>
             })}
-            {!detail.batches.length && <TableRow><TableCell colSpan={7} className="py-10 text-center text-muted-foreground">Belum ada batch penerimaan.</TableCell></TableRow>}
+            {!detail.batches.length && <TableRow><TableCell colSpan={8} className="py-10 text-center text-muted-foreground">Belum ada batch penerimaan.</TableCell></TableRow>}
           </TableBody>
         </Table>
         <ListPagination total={detail.total} page={detail.page} pages={detail.pages} href={(page) => "/data-barang/" + id + "?page=" + page} />
