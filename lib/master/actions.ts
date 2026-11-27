@@ -21,7 +21,8 @@ export async function saveMasterAction(input: unknown): Promise<{ ok: boolean; m
     }
     return { ok: false, message: "Data belum disimpan. Periksa koneksi lalu coba lagi." }
   }
-  revalidatePath("/data-barang", "layout")
+  revalidatePath("/data-barang")
+  revalidatePath("/data-barang/[id]", "page")
   revalidatePath("/pengaturan")
   return { ok: true, message: "Data berhasil disimpan." }
 }

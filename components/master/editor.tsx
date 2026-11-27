@@ -30,6 +30,7 @@ function fieldsFor(kind: MasterKind, categories: CategoryOption[], record?: Mast
       { ...nameField, maxLength: 120 }, { name: "email", label: "Email", type: "email", initial: "", required: true, maxLength: 254 },
       { name: "role", label: "Role", initial: "OPERATOR", options: [{ value: "ADMIN", label: "Admin" }, { value: "OPERATOR", label: "Operator" }] }, status,
       { name: "password", label: record ? "Password baru (opsional)" : "Password", type: "password", initial: "", required: !record, hint: "Minimal 15 karakter, maksimal 72 byte. Mengganti password mencabut session lama." },
+      { name: "passwordConfirm", label: "Ulangi password", type: "password", initial: "", required: !record },
     ]
     case "product": return [
       { ...nameField, label: "Nama barang" },
@@ -84,6 +85,11 @@ function EditorForm({ kind, record, categories = [], general, close, onBusy }: P
   const submit = handleSubmit(async (values) => {
     setMessage("")
     clearErrors()
+    if (kind === "user" && values.password !== values.passwordConfirm) {
+      setError("passwordConfirm", { message: "Konfirmasi password tidak cocok." })
+      setMessage("Periksa kembali isian form.")
+      return
+    }
     const payload = kind === "general"
       ? { ...values, kind, nearVersion: general?.nearVersion ?? null, deadVersion: general?.deadVersion ?? null }
       : { ...values, kind, id: record?.id ?? null, updatedAt: record?.updatedAt ?? null }
@@ -132,6 +138,7 @@ function EditorForm({ kind, record, categories = [], general, close, onBusy }: P
                 <Input {...register(field.name)} id={id} type={field.type ?? "text"} disabled={isSubmitting} required={field.required}
                   min={field.type === "number" ? (field.name === "minStock" ? 0 : 1) : undefined} step={field.type === "number" ? 1 : undefined}
                   maxLength={field.maxLength} autoComplete={field.type === "password" ? "new-password" : field.type === "email" ? "off" : undefined}
+                  onKeyDown={field.name === "cartonBarcode" ? (event) => { if (event.key === "Enter") event.preventDefault() } : undefined}
                   aria-invalid={!!error} aria-describedby={error ? id + "-error" : field.hint ? id + "-hint" : undefined} />
               )}
               {field.hint && <p id={id + "-hint"} className="type-caption text-muted-foreground">{field.hint}</p>}

@@ -128,8 +128,8 @@ function safeAuditMetadata(value: Prisma.JsonValue): Record<string, string | num
   if (!value || typeof value !== "object" || Array.isArray(value)) return {}
   return Object.fromEntries(auditFields.flatMap((key) => {
     const field = value[key]
-    return field === null || ["string", "number", "boolean"].includes(typeof field)
-      ? [[key, field as string | number | boolean | null]] : []
+    return field === null || typeof field === "string" || typeof field === "number" || typeof field === "boolean"
+      ? [[key, field]] : []
   }))
 }
 export async function readAudit(query: ListQuery) {

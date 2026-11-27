@@ -1,6 +1,6 @@
 # E-Gudang — Project Structure
 
-App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase authentication dan direktori yang dibuat ketika fiturnya diperlukan.
+App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase master data dan direktori yang dibuat ketika fiturnya diperlukan.
 
 ```text
 app/
@@ -11,6 +11,7 @@ app/
     layout.tsx
     dashboard/page.tsx
     data-barang/page.tsx
+    data-barang/[id]/page.tsx
     barang-masuk/page.tsx
     barang-keluar/page.tsx
     stok-opname/page.tsx
@@ -23,6 +24,10 @@ app/
 components/
   ui/
   auth/login-form.tsx
+  master/
+    editor.tsx
+    master-table.tsx
+    list-controls.tsx
   providers/theme-provider.tsx
   layout/
     navigation.ts
@@ -44,6 +49,14 @@ lib/
   db-client.ts
   prisma.ts
   permissions.ts
+  inventory/eligibility.ts
+  master/
+    schema.ts
+    query.ts
+    types.ts
+    read.ts
+    service.ts
+    actions.ts
   auth/
     access.ts
     actions.ts
@@ -57,12 +70,15 @@ tests/
   sidebar-preference.test.mjs
   credentials.test.mjs
   permissions.test.mjs
+  master-schema.test.mjs
+  master-query.test.mjs
 prisma/
   schema.prisma
   migrations/
   seed.mjs
   smoke.mjs
   auth-smoke.mjs
+  master-smoke.mjs
 scripts/
   create-user.mjs
 docs/
@@ -74,6 +90,7 @@ docs/
   ENGINEERING.md
   DATABASE.md
   AUTH.md
+  MASTER_DATA.md
 auth.ts
 AGENTS.md
 prisma7.config.ts
