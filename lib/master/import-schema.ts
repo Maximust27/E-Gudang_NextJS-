@@ -26,16 +26,15 @@ export type ImportPreviewRow = {
   barcode: string
   category: string
   method: string
+  piecesPerCarton: string
+  minStock: string
+  status: string
   issues: string[]
 }
 export type ImportPreview = { rows: ImportPreviewRow[]; valid: number; invalid: number; fingerprint: string | null }
 
 const display = (value: ImportRow["cells"][number]) => typeof value === "string" || typeof value === "number" ? String(value) : ""
 const numericText = (value: ImportRow["cells"][number], fallback = "") => value === null || value === "" ? fallback : display(value)
-
-// Approximate the existing case/accent-insensitive DB collation for intra-file
-// warnings. Actual database unique constraints are authoritative at commit.
-export const duplicateKey = (value: string) => value.normalize("NFKD").replace(/\p{M}/gu, "").trim().toLowerCase()
 
 export function readImportRow(row: ImportRow) {
   const [sku, name, barcode, category, method, pieces, minimum, status] = row.cells
@@ -61,7 +60,8 @@ export function readImportRow(row: ImportRow) {
   }
   const preview: ImportPreviewRow = {
     row: row.row, sku: display(sku).trim(), name: display(name).trim(), barcode: display(barcode).trim(),
-    category: display(category).trim(), method: methodValue, issues,
+    category: display(category).trim(), method: methodValue, piecesPerCarton: draft.piecesPerCarton,
+    minStock: draft.minStock, status: draft.isActive === "active" ? "Aktif" : draft.isActive === "inactive" ? "Nonaktif" : statusValue, issues,
   }
   return { preview, draft, command: parsed.success && parsed.data.kind === "product" && !issues.length ? parsed.data : null }
 }

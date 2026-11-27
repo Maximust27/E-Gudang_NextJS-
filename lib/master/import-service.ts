@@ -1,20 +1,40 @@
 import { createHash } from "node:crypto"
-import type { Prisma, PrismaClient } from "../../generated/prisma/client.ts"
-import { duplicateKey, importRowsSchema, readImportRow, type ImportPreview, type ImportRow, type ProductCommand } from "./import-schema.ts"
+import { Prisma, type PrismaClient } from "../../generated/prisma/client.ts"
+import { importRowsSchema, readImportRow, type ImportPreview, type ImportRow, type ProductCommand } from "./import-schema.ts"
 import { effectiveMethod, masterSchema } from "./schema.ts"
 import { MasterError, saveProduct } from "./service.ts"
 
-type Reader = Pick<Prisma.TransactionClient, "category" | "product">
+type Reader = Pick<Prisma.TransactionClient, "category" | "$queryRaw">
+
+// Use exactly the inventory migration's utf8mb4_unicode_ci collation for
+// both file-internal and stored duplicate checks. All values are parameters.
+async function findDuplicates(reader: Reader, entries: ReturnType<typeof readImportRow>[]) {
+  const selects = entries.map(({ preview }) => Prisma.sql`
+    SELECT CAST(${preview.row} AS UNSIGNED) AS row_no,
+      CONVERT(${preview.sku} USING utf8mb4) COLLATE utf8mb4_unicode_ci AS sku,
+      CONVERT(${preview.barcode} USING utf8mb4) COLLATE utf8mb4_unicode_ci AS barcode
+  `)
+  const rows = await reader.$queryRaw<Array<{
+    rowNumber: number | bigint
+    duplicateSku: number | bigint | boolean
+    duplicateBarcode: number | bigint | boolean
+    existingSku: number | bigint | boolean
+    existingBarcode: number | bigint | boolean
+  }>>(Prisma.sql`
+    WITH input_rows AS (${Prisma.join(selects, " UNION ALL ")})
+    SELECT i.row_no AS rowNumber,
+      EXISTS(SELECT 1 FROM input_rows j WHERE j.row_no <> i.row_no AND i.sku <> '' AND j.sku = i.sku) AS duplicateSku,
+      EXISTS(SELECT 1 FROM input_rows j WHERE j.row_no <> i.row_no AND i.barcode <> '' AND j.barcode = i.barcode) AS duplicateBarcode,
+      EXISTS(SELECT 1 FROM products p WHERE p.sku = i.sku) AS existingSku,
+      EXISTS(SELECT 1 FROM products p WHERE p.carton_barcode = i.barcode) AS existingBarcode
+    FROM input_rows i
+  `)
+  return new Map(rows.map((row) => [Number(row.rowNumber), row]))
+}
 
 async function analyze(reader: Reader, rows: ImportRow[]) {
   const entries = rows.map(readImportRow)
-  const skuCounts = new Map<string, number>()
-  const barcodeCounts = new Map<string, number>()
-  for (const { preview } of entries) {
-    for (const [key, counts] of [[duplicateKey(preview.sku), skuCounts], [duplicateKey(preview.barcode), barcodeCounts]] as const) {
-      if (key) counts.set(key, (counts.get(key) ?? 0) + 1)
-    }
-  }
+  const duplicates = await findDuplicates(reader, entries)
   const categoryNames = [...new Set(entries.map((entry) => entry.preview.category).filter(Boolean))]
   const categories = new Map(await Promise.all(categoryNames.map(async (name) => [
     name, await reader.category.findUnique({ where: { name }, select: { id: true, name: true, defaultMethod: true, isActive: true, updatedAt: true } }),
@@ -22,22 +42,20 @@ async function analyze(reader: Reader, rows: ImportRow[]) {
   const commands: ProductCommand[] = []
   const snapshot: unknown[] = []
 
-  // Bounded by 100 rows. Queries use DB collation/unique indexes; do not
-  // load the entire product catalog or use approximate client duplicates alone.
+  // Bounded by 100 rows. Never load the entire product catalog.
   for (const { preview, draft, command } of entries) {
     const category = categories.get(preview.category)
     if (!category?.isActive) preview.issues.push("Kategori tidak ditemukan atau nonaktif.")
     if (category?.defaultMethod === "FEFO" && draft.methodOverride === "FIFO") preview.issues.push("Kategori FEFO tidak dapat menggunakan FIFO.")
-    if ((skuCounts.get(duplicateKey(preview.sku)) ?? 0) > 1) preview.issues.push("SKU duplikat di file.")
-    if ((barcodeCounts.get(duplicateKey(preview.barcode)) ?? 0) > 1) preview.issues.push("Barcode duplikat di file.")
+    const duplicate = duplicates.get(preview.row)
+    if (!duplicate) throw new MasterError("Pemeriksaan duplikat tidak lengkap.")
+    if (duplicate.duplicateSku) preview.issues.push("SKU duplikat di file.")
+    if (duplicate.duplicateBarcode) preview.issues.push("Barcode duplikat di file.")
+    if (duplicate.existingSku) preview.issues.push("SKU sudah terdaftar.")
+    if (duplicate.existingBarcode) preview.issues.push("Barcode sudah terdaftar.")
     if (command) {
-      const [sku, barcode] = await Promise.all([
-        reader.product.findUnique({ where: { sku: command.sku }, select: { id: true } }),
-        reader.product.findUnique({ where: { cartonBarcode: command.cartonBarcode }, select: { id: true } }),
-      ])
-      if (sku) preview.issues.push("SKU sudah terdaftar.")
-      if (barcode) preview.issues.push("Barcode sudah terdaftar.")
       if (category?.isActive && !preview.issues.length) {
+        preview.category = category.name
         const parsed = masterSchema.parse({ ...draft, categoryId: String(category.id) })
         if (parsed.kind !== "product") throw new MasterError("Data import tidak valid.")
         commands.push(parsed)

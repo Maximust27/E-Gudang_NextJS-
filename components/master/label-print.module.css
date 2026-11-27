@@ -16,6 +16,9 @@
 }
 
 .previewScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   overflow-x: auto;
 }
 
@@ -104,6 +107,7 @@
   }
 
   .previewScroll {
+    display: block;
     overflow: visible;
   }
 
@@ -116,12 +120,16 @@
     -webkit-print-color-adjust: exact;
   }
 
+  .sheet:not(:last-child) {
+    break-after: page;
+  }
+
   .label {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
 
-  :global(html), :global(body) {
+  :global(html):has(.page), :global(body):has(.page) {
     background: white !important;
     color: black !important;
   }

@@ -99,7 +99,9 @@ try {
   const settings = await page(adminClient, "/pengaturan")
   assert.ok(settings.body.includes("Kelola konfigurasi dan data master gudang."))
   assert.ok((await page(adminClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
-  assert.ok((await page(adminClient, "/data-barang")).body.includes("Tambah Barang"))
+  const adminProducts = await page(adminClient, "/data-barang")
+  assert.ok(adminProducts.body.includes("Tambah Barang"))
+  assert.ok(adminProducts.body.includes("Import Excel"))
 
   const operatorClient = browser()
   await signIn(operatorClient, operator.email, password, operator.email)
@@ -107,6 +109,9 @@ try {
   const products = await page(operatorClient, "/data-barang")
   assert.ok(products.body.includes("Kelola informasi SKU dan inventaris gudang."))
   assert.ok(!products.body.includes("Tambah Barang"))
+  assert.ok(!products.body.includes("Import Excel"))
+  const printDenied = await page(guest, "/cetak-label/sku/1")
+  assert.ok((printDenied.location + printDenied.body).includes("/login"))
   assert.ok(!(await page(operatorClient, "/pengaturan?tab=user")).body.includes("Tambah Pengguna"))
   assert.ok(!(await page(operatorClient, "/pengaturan")).body.includes("Kelola konfigurasi dan data master gudang."))
 

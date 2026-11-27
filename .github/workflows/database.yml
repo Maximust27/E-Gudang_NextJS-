@@ -9,6 +9,7 @@ on:
       - "lib/prisma.ts"
       - "lib/auth/**"
       - "lib/master/**"
+      - "lib/barcode/**"
       - "lib/inventory/**"
       - "components/master/**"
       - "lib/permissions.ts"
@@ -68,6 +69,7 @@ jobs:
       - run: npm run db:seed
       - run: npm run db:smoke
       - run: npm run master:smoke
+      - run: npm run import:smoke
       - run: npm run db:status
       - name: Build and exercise authentication on isolated database
         env:

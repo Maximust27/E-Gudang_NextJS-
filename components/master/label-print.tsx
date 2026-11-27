@@ -48,6 +48,7 @@ export function LabelPrint({ data, bits, error }: { data: LabelData; bits: strin
   const copies = parseCopies(copiesText)
   const fits = !!bits && barcodeFits(bits, width)
   const ready = !!bits && fits && copies !== null
+  const perSheet = width === 90 ? 10 : 5
 
   return (
     <main className={styles.page}>
@@ -82,9 +83,13 @@ export function LabelPrint({ data, bits, error }: { data: LabelData; bits: strin
         </Card>
         <h2 className="type-section-title">Pratinjau label</h2>
       </div>
-      {ready && <div className={styles.previewScroll}><div className={styles.sheet} style={{ gridTemplateColumns: "repeat(" + (width === 90 ? 2 : 1) + ", " + width + "mm)" }}>
-        {Array.from({ length: copies }, (_, index) => <PrintedLabel key={index} data={data} bits={bits} width={width} />)}
-      </div></div>}
+      {ready && <div className={styles.previewScroll}>
+        {Array.from({ length: Math.ceil(copies / perSheet) }, (_, sheet) => (
+          <div key={sheet} className={styles.sheet} style={{ gridTemplateColumns: "repeat(" + (width === 90 ? 2 : 1) + ", " + width + "mm)" }}>
+            {Array.from({ length: Math.min(perSheet, copies - sheet * perSheet) }, (_, index) => <PrintedLabel key={index} data={data} bits={bits} width={width} />)}
+          </div>
+        ))}
+      </div>}
     </main>
   )
 }

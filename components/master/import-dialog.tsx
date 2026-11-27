@@ -149,13 +149,15 @@ function ImportForm({ categories, busy, onBusy, close }: {
         <div className="max-h-80 overflow-y-auto">
           <Table aria-label="Validasi baris import">
             <TableHeader><TableRow>
-              {["Baris", "SKU / Barang", "Barcode", "Kategori / Metode", "Hasil"].map((title) => <TableHead key={title} scope="col">{title}</TableHead>)}
+              {["Baris", "SKU / Barang", "Barcode", "Kategori / Metode", "Isi / Min. stok", "Status", "Hasil"].map((title) => <TableHead key={title} scope="col">{title}</TableHead>)}
             </TableRow></TableHeader>
             <TableBody>{preview.rows.map((row) => <TableRow key={row.row}>
               <TableCell className="tabular-nums">{row.row}</TableCell>
               <TableCell><p className="type-label break-all">{row.sku || "—"}</p><p className="type-caption text-muted-foreground break-words">{row.name}</p></TableCell>
               <TableCell className="break-all">{row.barcode || "—"}</TableCell>
               <TableCell><p className="break-words">{row.category || "—"}</p><p className="type-caption text-muted-foreground">{row.method}</p></TableCell>
+              <TableCell className="whitespace-nowrap tabular-nums"><p>{row.piecesPerCarton || "—"} pcs/karton</p><p className="type-caption text-muted-foreground">{row.minStock} CTN</p></TableCell>
+              <TableCell>{row.status}</TableCell>
               <TableCell className="min-w-40">
                 {row.issues.length ? <ul className="flex flex-col gap-1 type-caption text-danger-foreground">{row.issues.map((issue, index) => <li key={index}>{issue}</li>)}</ul> : <Badge variant="success">Valid</Badge>}
               </TableCell>
