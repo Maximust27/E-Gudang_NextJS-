@@ -18,23 +18,32 @@ export const settingsTabs = [
 ] as const
 export type SettingsTab = (typeof settingsTabs)[number]["key"]
 
-export function parseListQuery(params: SearchParams) {
+export type ListQuery = {
+  q: string
+  status: "all" | "active" | "inactive"
+  method: "all" | "FIFO" | "FEFO"
+  categoryId: number | null
+  sort: "name-asc" | "name-desc" | "code-asc" | "newest"
+  page: number
+  tab: SettingsTab
+}
+
+export function parseListQuery(params: SearchParams): ListQuery {
   const status = scalar(params.status)
   const method = scalar(params.method)
   const sort = scalar(params.sort)
   const tab = scalar(params.tab)
   return {
     q: scalar(params.q).trim().slice(0, 100),
-    status: status === "active" || status === "inactive" ? status : "all" as const,
-    method: method === "FIFO" || method === "FEFO" ? method : "all" as const,
+    status: status === "active" || status === "inactive" ? status : "all",
+    method: method === "FIFO" || method === "FEFO" ? method : "all",
     categoryId: positiveId(scalar(params.category)),
-    sort: sort === "name-desc" || sort === "code-asc" || sort === "newest" ? sort : "name-asc" as const,
+    sort: sort === "name-desc" || sort === "code-asc" || sort === "newest" ? sort : "name-asc",
     page: positiveId(scalar(params.page)) ?? 1,
     tab: settingsTabs.find((item) => item.key === tab)?.key ?? "category",
   }
 }
 
-export type ListQuery = ReturnType<typeof parseListQuery>
 export function listHref(path: string, query: ListQuery, page: number, tab?: SettingsTab) {
   const params = new URLSearchParams()
   if (tab) params.set("tab", tab)
