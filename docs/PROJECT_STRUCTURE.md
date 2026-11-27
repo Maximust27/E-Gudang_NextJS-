@@ -1,6 +1,6 @@
 # E-Gudang — Project Structure
 
-App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase app layout dan direktori yang dibuat ketika fiturnya diperlukan.
+App Router berada di root repository, tanpa folder src. Struktur berikut membedakan file yang sudah digunakan pada fase authentication dan direktori yang dibuat ketika fiturnya diperlukan.
 
 ```text
 app/
@@ -16,11 +16,13 @@ app/
     stok-opname/page.tsx
     laporan/page.tsx
     pengaturan/page.tsx
+  api/auth/[...nextauth]/route.ts
   globals.css
   layout.tsx
   page.tsx
 components/
   ui/
+  auth/login-form.tsx
   providers/theme-provider.tsx
   layout/
     navigation.ts
@@ -32,6 +34,7 @@ components/
     page-container.tsx
     page-header.tsx
     section-header.tsx
+    feature-placeholder.tsx
 styles/
   tokens.css
   typography.css
@@ -40,16 +43,28 @@ lib/
   sidebar-preference.ts
   db-client.ts
   prisma.ts
+  permissions.ts
+  auth/
+    access.ts
+    actions.ts
+    authorize.ts
+    credentials.ts
+    rate-limit.ts
 tests/
   design-tokens.test.mjs
   database-url.test.mjs
   navigation.test.mjs
   sidebar-preference.test.mjs
+  credentials.test.mjs
+  permissions.test.mjs
 prisma/
   schema.prisma
   migrations/
   seed.mjs
   smoke.mjs
+  auth-smoke.mjs
+scripts/
+  create-user.mjs
 docs/
   PRD.md
   DESIGN.md
@@ -58,12 +73,14 @@ docs/
   LAYOUT_QA.md
   ENGINEERING.md
   DATABASE.md
+  AUTH.md
+auth.ts
 AGENTS.md
 prisma7.config.ts
 package.json
 package-lock.json
 ```
 
-Root layout mengelola font dan providers. Route group dashboard memiliki app shell bersama; route auth memakai layout terpisah. Root sementara mengarahkan ke dashboard. Buat app/api, actions, services, schemas, types dan folder lain saat benar-benar diperlukan. Import alias `@/*` mengarah ke root.
+Root layout mengelola font dan providers. Route group dashboard memiliki app shell bersama; route auth memakai layout terpisah. Root mengarahkan ke dashboard, lalu session diperiksa di server; pengguna belum login diarahkan ke /login. Buat app/api, actions, services, schemas, types dan folder lain saat benar-benar diperlukan. Import alias `@/*` mengarah ke root.
 
 Design tokens adalah sumber nilai CSS; komponen UI hanya mengonsumsi token. Shared components menangani pola aplikasi berulang. Validasi bisnis dan operasi database tetap di server. Prisma client generated tidak dikomit. Migration disimpan dalam prisma/migrations. Seed referensi dan smoke test database dijalankan secara eksplisit; lihat DATABASE.md.

@@ -16,5 +16,6 @@ Gunakan versi Node/npm yang kompatibel dengan lockfile. Instal dengan `npm ci`, 
 - [App Layout QA](docs/LAYOUT_QA.md)
 - [Database schema dan migration](docs/DATABASE.md)
 - [Engineering standards](docs/ENGINEERING.md)
+- [Authentication & Authorization](docs/AUTH.md)
 
-Root mengarahkan ke /dashboard. App shell digunakan oleh tujuh halaman utama, sedangkan /login memiliki layout terpisah. Seluruh halaman masih placeholder; database schema V1 tersedia sebagai candidate migration; autentikasi dan fitur inventaris belum tersedia. Jangan gunakan aplikasi ini untuk data operasional nyata.
+Root mengarahkan ke /dashboard. App shell digunakan oleh tujuh halaman utama, sedangkan /login memiliki layout terpisah. Seluruh halaman masih placeholder; database schema V1 dan autentikasi internal tersedia sebagai candidate Phase 4; fitur inventaris belum tersedia. Jangan gunakan aplikasi ini untuk data operasional nyata.

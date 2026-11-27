@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, Settings, UserRound } from "lucide-react"
+import { Bell, LogOut, Settings, UserRound } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -27,11 +27,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import type { CurrentUser } from "@/lib/auth/access"
+import { logout } from "@/lib/auth/actions"
+import { can, roleLabels } from "@/lib/permissions"
 import { getActiveNavigationItem } from "./navigation"
 import { MenuSearch } from "./menu-search"
 import { ThemeSwitcher } from "./theme-switcher"
 
-export function AppHeader() {
+export function AppHeader({ user }: { user: CurrentUser }) {
   const pathname = usePathname()
   const activeItem = getActiveNavigationItem(pathname)
 
@@ -55,7 +58,7 @@ export function AppHeader() {
       </div>
 
       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-        <MenuSearch />
+        <MenuSearch role={user.role} />
         <Popover>
           <PopoverTrigger asChild>
             <Button type="button" variant="ghost" size="icon" aria-label="Notifikasi">
@@ -80,14 +83,18 @@ export function AppHeader() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
-              <span className="block type-label text-foreground">Mode pengembangan</span>
-              <span className="block type-caption text-muted-foreground">Autentikasi belum aktif</span>
+              <span className="block truncate type-label text-foreground">{user.name}</span>
+              <span className="block truncate type-caption text-muted-foreground">{roleLabels[user.role]} · {user.email}</span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/pengaturan"><Settings aria-hidden="true" /> Pengaturan</Link>
+            {can(user.role, "settings:manage") && (
+              <DropdownMenuItem asChild>
+                <Link href="/pengaturan"><Settings aria-hidden="true" /> Pengaturan</Link>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem variant="destructive" onSelect={() => { void logout() }}>
+              <LogOut aria-hidden="true" /> Keluar
             </DropdownMenuItem>
-            <DropdownMenuItem disabled><UserRound aria-hidden="true" /> Akun belum tersedia</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { AppHeader } from "@/components/layout/app-header"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { requireUser } from "@/lib/auth/access"
 import { parseSidebarPreference, SIDEBAR_COOKIE_NAME } from "@/lib/sidebar-preference"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
@@ -24,6 +25,7 @@ function DashboardShellFallback() {
 }
 
 async function DashboardShell({ children }: { children: ReactNode }) {
+  const user = await requireUser()
   const cookieStore = await cookies()
   const defaultOpen = parseSidebarPreference(cookieStore.get(SIDEBAR_COOKIE_NAME)?.value)
 
@@ -35,9 +37,9 @@ async function DashboardShell({ children }: { children: ReactNode }) {
       >
         Lewati ke konten utama
       </a>
-      <AppSidebar />
+      <AppSidebar role={user.role} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader />
+        <AppHeader user={user} />
         <SidebarInset id="main-content" tabIndex={-1} className="scroll-mt-app-header">
           {children}
         </SidebarInset>

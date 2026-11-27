@@ -8,9 +8,10 @@ import {
   Settings,
   type LucideIcon,
 } from "lucide-react"
+import { can, routePermissions, type WarehouseRoute, type Role } from "../../lib/permissions.ts"
 
 export type NavigationItem = {
-  href: string
+  href: WarehouseRoute
   label: string
   icon: LucideIcon
   placement?: "footer"
@@ -22,7 +23,7 @@ type NavigationGroup = {
 }
 
 // Single source for sidebar, breadcrumb and menu search.
-// Role filtering will be added when real authentication is implemented.
+// Permissions are shared with the secure server-side access checks.
 export const navigationGroups: NavigationGroup[] = [
   {
     label: "Utama",
@@ -56,4 +57,10 @@ export function getActiveNavigationItem(pathname: string | null) {
   return navigationItems.find(
     (item) => pathname === item.href || pathname.startsWith(item.href + "/")
   )
+}
+
+export function getVisibleNavigationGroups(role: Role) {
+  return navigationGroups
+    .map((group) => ({ ...group, items: group.items.filter((item) => can(role, routePermissions[item.href])) }))
+    .filter((group) => group.items.length > 0)
 }

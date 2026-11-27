@@ -44,6 +44,7 @@ model User {
   name         String   @db.VarChar(120)
   role         Role
   isActive     Boolean  @default(true) @map("is_active")
+  sessionVersion Int    @default(0) @map("session_version")
   createdAt    DateTime @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.DateTime(3)
 
@@ -278,4 +279,12 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
 
   @@map("settings")
+}
+
+model LoginRateLimit {
+  key      String   @id @db.VarChar(64)
+  attempts Int
+  resetAt  DateTime @map("reset_at") @db.DateTime(3)
+
+  @@map("login_rate_limits")
 }

@@ -19,3 +19,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Do not expand the current phase into unrelated business functionality or dependency upgrades.
 - Follow `docs/ENGINEERING.md`: shortest readable code, specification-first, measured optimization, no premature abstraction. Add focused regression tests for changed behavior.
 - Before review run `npm run check`. Report any checks not run; do not claim performance or accessibility without measurement.
+- Follow `docs/AUTH.md`: call the server authorization guard for every sensitive page, action and data access; never trust hidden navigation or a role embedded in an old session. Do not expose password hashes, secrets or login credentials.

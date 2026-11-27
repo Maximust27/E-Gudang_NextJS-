@@ -1,25 +1,13 @@
 import type { Metadata } from "next"
-
-import { PageContainer } from "@/components/shared/page-container"
-import { PageHeader } from "@/components/shared/page-header"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Suspense } from "react"
+import { FeaturePlaceholder } from "@/components/shared/feature-placeholder"
 
 export const metadata: Metadata = { title: "Dashboard" }
 
 export default function Page() {
   return (
-    <PageContainer>
-      <PageHeader title="Dashboard" description="Ringkasan operasional gudang." />
-      <Card>
-        <CardHeader>
-          <CardTitle>Dalam pengembangan</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="type-body text-muted-foreground">
-            Layout halaman sudah tersedia. Fitur ini akan diimplementasikan pada fase berikutnya.
-          </p>
-        </CardContent>
-      </Card>
-    </PageContainer>
+    <Suspense fallback={null}>
+      <FeaturePlaceholder title="Dashboard" description="Ringkasan operasional gudang." route="/dashboard" />
+    </Suspense>
   )
 }

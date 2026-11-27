@@ -6,6 +6,7 @@ import { Warehouse, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { can, routePermissions, type Role } from "@/lib/permissions"
 import {
   Sidebar,
   SidebarContent,
@@ -65,7 +66,7 @@ function NavigationLink({
   )
 }
 
-export function AppSidebar() {
+export function AppSidebar({ role }: { role: Role }) {
   const pathname = usePathname()
   const activeItem = getActiveNavigationItem(pathname)
   const { isMobile, setOpenMobile } = useSidebar()
@@ -120,7 +121,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
-                {mainItems.map((item) => (
+                {mainItems.filter((item) => can(role, routePermissions[item.href])).map((item) => (
                   <NavigationLink
                     key={item.href}
                     item={item}
@@ -137,7 +138,7 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-2">
         <nav aria-label="Administrasi">
           <SidebarMenu className="gap-1">
-            {footerItems.map((item) => (
+            {footerItems.filter((item) => can(role, routePermissions[item.href])).map((item) => (
               <NavigationLink
                 key={item.href}
                 item={item}
@@ -148,7 +149,7 @@ export function AppSidebar() {
           </SidebarMenu>
         </nav>
         <p className={cn("overflow-hidden whitespace-nowrap px-2 py-1 type-caption text-sidebar-foreground/80", labelMotion)}>
-          Mode pengembangan
+          Sistem internal gudang
         </p>
       </SidebarFooter>
     </Sidebar>
