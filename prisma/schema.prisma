@@ -1,13 +1,281 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "ts"
 }
 
 datasource db {
   provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+}
+
+enum StockMethod {
+  FIFO
+  FEFO
+}
+
+enum TransactionType {
+  IN
+  OUT
+  ADJUSTMENT
+  REVERSAL
+}
+
+enum TransactionStatus {
+  DRAFT
+  POSTED
+}
+
+enum OpnameStatus {
+  DRAFT
+  SUBMITTED
+  CONFIRMED
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(254)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  name         String   @db.VarChar(120)
+  role         Role
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  transactions    Transaction[]
+  createdOpnames  StockOpname[] @relation("OpnameCreator")
+  approvedOpnames StockOpname[] @relation("OpnameApprover")
+  activityLogs    ActivityLog[]
+
+  @@map("users")
+}
+
+model Category {
+  id            Int         @id @default(autoincrement())
+  name          String      @unique @db.VarChar(120)
+  defaultMethod StockMethod @map("default_method")
+  isActive      Boolean     @default(true) @map("is_active")
+  createdAt     DateTime    @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.DateTime(3)
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              Int          @id @default(autoincrement())
+  sku             String       @unique @db.VarChar(64)
+  cartonBarcode   String       @unique @map("carton_barcode") @db.VarChar(128)
+  name            String       @db.VarChar(180)
+  categoryId      Int          @map("category_id")
+  methodOverride  StockMethod? @map("method_override")
+  piecesPerCarton Int?         @map("pieces_per_carton")
+  minStock        Int          @default(0) @map("min_stock")
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+
+  category         Category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  batches          InventoryBatch[]
+  transactionItems TransactionItem[]
+
+  @@index([categoryId, isActive])
+  @@index([isActive, name])
+  @@map("products")
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(180)
+  code      String?  @unique @db.VarChar(64)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  transactions Transaction[]
+
+  @@map("suppliers")
+}
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @db.VarChar(64)
+  name      String   @db.VarChar(120)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  batches InventoryBatch[]
+
+  @@map("locations")
+}
+
+model InventoryBatch {
+  id              Int       @id @default(autoincrement())
+  productId       Int       @map("product_id")
+  locationId      Int       @map("location_id")
+  internalLotCode String    @unique @map("internal_lot_code") @db.VarChar(128)
+  supplierBatchNo String?   @map("supplier_batch_no") @db.VarChar(100)
+  receivedAt      DateTime  @map("received_at") @db.DateTime(3)
+  expiryDate      DateTime? @map("expiry_date") @db.Date
+  qtyOnHand       Int       @default(0) @map("qty_on_hand")
+  version         Int       @default(0)
+  isBlocked       Boolean   @default(false) @map("is_blocked")
+  blockedReason   String?   @map("blocked_reason") @db.VarChar(500)
+  receiptItemId   Int       @map("receipt_item_id")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.DateTime(3)
+
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  receiptItem TransactionItem @relation("ReceiptLots", fields: [receiptItemId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  movements   StockMovement[]
+  opnameItems StockOpnameItem[]
+
+  @@index([productId, isBlocked, receivedAt, id], map: "batches_fifo_idx")
+  @@index([productId, isBlocked, expiryDate, receivedAt, id], map: "batches_fefo_idx")
+  @@index([expiryDate])
+  @@index([locationId])
+  @@index([receiptItemId])
+  @@map("inventory_batches")
+}
+
+model Transaction {
+  id             Int               @id @default(autoincrement())
+  number         String            @unique @db.VarChar(64)
+  type           TransactionType
+  status         TransactionStatus @default(DRAFT)
+  supplierId     Int?              @map("supplier_id")
+  destination    String?           @db.VarChar(180)
+  reference      String?           @db.VarChar(120)
+  notes          String?           @db.Text
+  reason         String?           @db.VarChar(500)
+  receivedAt     DateTime?         @map("received_at") @db.DateTime(3)
+  postedAt       DateTime?         @map("posted_at") @db.DateTime(3)
+  userId         Int               @map("user_id")
+  idempotencyKey String?           @unique @map("idempotency_key") @db.VarChar(64)
+  payloadHash    String?           @map("payload_hash") @db.Char(64)
+  reversalOfId   Int?              @unique @map("reversal_of_id")
+  opnameId       Int?              @unique @map("opname_id")
+  createdAt      DateTime          @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.DateTime(3)
+
+  user       User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  supplier   Supplier? @relation(fields: [supplierId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  reversalOf Transaction? @relation("TransactionReversal", fields: [reversalOfId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  reversal   Transaction? @relation("TransactionReversal")
+  opname     StockOpname? @relation(fields: [opnameId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  items      TransactionItem[]
+
+  @@index([type, status, postedAt])
+  @@index([postedAt])
+  @@index([supplierId])
+  @@index([userId])
+  @@map("transactions")
+}
+
+model TransactionItem {
+  id              Int  @id @default(autoincrement())
+  transactionId   Int  @map("transaction_id")
+  productId       Int  @map("product_id")
+  quantity        Int
+  piecesPerCarton Int? @map("pieces_per_carton")
+
+  transaction  Transaction @relation(fields: [transactionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  product      Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  receivedLots InventoryBatch[] @relation("ReceiptLots")
+  movements    StockMovement[]
+
+  @@index([transactionId])
+  @@index([productId, transactionId])
+  @@map("transaction_items")
+}
+
+model StockMovement {
+  id                Int      @id @default(autoincrement())
+  transactionItemId Int      @map("transaction_item_id")
+  batchId           Int      @map("batch_id")
+  signedDelta       Int      @map("signed_delta")
+  qtyBefore         Int      @map("qty_before")
+  qtyAfter          Int      @map("qty_after")
+  createdAt         DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  transactionItem TransactionItem @relation(fields: [transactionItemId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  batch           InventoryBatch @relation(fields: [batchId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([transactionItemId, batchId])
+  @@index([batchId, createdAt, id])
+  @@map("stock_movements")
+}
+
+model StockOpname {
+  id           Int          @id @default(autoincrement())
+  number       String       @unique @db.VarChar(64)
+  status       OpnameStatus @default(DRAFT)
+  createdById  Int          @map("created_by")
+  approvedById Int?         @map("approved_by")
+  notes        String?      @db.Text
+  createdAt    DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+  submittedAt  DateTime?    @map("submitted_at") @db.DateTime(3)
+  approvedAt   DateTime?    @map("approved_at") @db.DateTime(3)
+
+  createdBy  User @relation("OpnameCreator", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  approvedBy User? @relation("OpnameApprover", fields: [approvedById], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  items      StockOpnameItem[]
+  adjustment Transaction?
+
+  @@index([status, createdAt])
+  @@index([createdById])
+  @@index([approvedById])
+  @@map("stock_opnames")
+}
+
+model StockOpnameItem {
+  id              Int     @id @default(autoincrement())
+  opnameId        Int     @map("opname_id")
+  batchId         Int     @map("batch_id")
+  snapshotQty     Int     @map("snapshot_qty")
+  snapshotVersion Int     @map("snapshot_version")
+  countedQty      Int?    @map("counted_qty")
+  reason          String? @db.VarChar(500)
+  notes           String? @db.Text
+
+  opname StockOpname @relation(fields: [opnameId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  batch  InventoryBatch @relation(fields: [batchId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([opnameId, batchId])
+  @@index([batchId])
+  @@map("stock_opname_items")
+}
+
+model ActivityLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  action     String   @db.VarChar(64)
+  entityType String   @map("entity_type") @db.VarChar(64)
+  entityId   String   @map("entity_id") @db.VarChar(64)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([entityType, entityId, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
+model Setting {
+  key       String   @id @db.VarChar(64)
+  value     Int
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(3)
+
+  @@map("settings")
 }
