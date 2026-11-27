@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { getActiveNavigationItem, navigationGroups, navigationItems } from "../components/layout/navigation.ts"
+import { getActiveNavigationItem, getVisibleNavigationGroups, navigationGroups, navigationItems } from "../components/layout/navigation.ts"
 
 const routes = [
   "/dashboard",
@@ -30,4 +30,10 @@ test("unknown and lookalike paths do not activate a menu", () => {
   for (const path of [null, "", "/", "/login", "/dashboard-old", "/data-barang-lama", "/pengaturan2"]) {
     assert.equal(getActiveNavigationItem(path), undefined)
   }
+})
+
+test("operator navigation does not expose admin settings", () => {
+  const visible = (role) => getVisibleNavigationGroups(role).flatMap((group) => group.items.map((item) => item.href))
+  assert.deepEqual(visible("ADMIN"), routes)
+  assert.deepEqual(visible("OPERATOR"), routes.filter((route) => route !== "/pengaturan"))
 })

@@ -2,10 +2,9 @@ import { compare, hash } from "bcryptjs"
 import { randomBytes } from "node:crypto"
 
 import { getPrisma } from "@/lib/prisma"
-import { credentialsSchema } from "./credentials"
+import { credentialsSchema, passwordCost } from "./credentials"
 import { loginLimits, reserveLoginAttempt } from "./rate-limit"
 
-export const passwordCost = 12
 let dummyHash: Promise<string> | undefined
 
 export async function authorizeCredentials(input: unknown) {

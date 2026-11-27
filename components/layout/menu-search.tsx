@@ -21,10 +21,11 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { navigationGroups } from "./navigation"
+import { getVisibleNavigationGroups } from "./navigation"
+import type { Role } from "@/lib/permissions"
 
 // Menu search works now; inventory search needs real master data.
-export function MenuSearch() {
+export function MenuSearch({ role }: { role: Role }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -53,7 +54,7 @@ export function MenuSearch() {
           <CommandInput placeholder="Ketik nama menu..." aria-label="Nama menu" />
           <CommandList>
             <CommandEmpty>Menu tidak ditemukan.</CommandEmpty>
-            {navigationGroups.map((group) => (
+            {getVisibleNavigationGroups(role).map((group) => (
               <CommandGroup key={group.label} heading={group.label}>
                 {group.items.map((item) => {
                   const Icon = item.icon

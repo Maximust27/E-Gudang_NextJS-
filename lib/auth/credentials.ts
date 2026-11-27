@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+export const passwordCost = 12
+
 export const emailSchema = z.string().trim().toLowerCase().max(254).pipe(z.email())
 export const passwordSchema = z.string().min(1).refine(
   (value) => new TextEncoder().encode(value).length <= 72,

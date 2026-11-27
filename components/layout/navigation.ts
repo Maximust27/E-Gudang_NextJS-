@@ -8,11 +8,13 @@ import {
   Settings,
   type LucideIcon,
 } from "lucide-react"
+import { can, type Permission, type Role } from "../../lib/permissions.ts"
 
 export type NavigationItem = {
   href: string
   label: string
   icon: LucideIcon
+  permission: Permission
   placement?: "footer"
 }
 
@@ -22,28 +24,28 @@ type NavigationGroup = {
 }
 
 // Single source for sidebar, breadcrumb and menu search.
-// Role filtering will be added when real authentication is implemented.
+// Permissions are shared with the secure server-side access checks.
 export const navigationGroups: NavigationGroup[] = [
   {
     label: "Utama",
     items: [
-      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: "dashboard:view" },
     ],
   },
   {
     label: "Operasional",
     items: [
-      { href: "/data-barang", label: "Data Barang", icon: Package },
-      { href: "/barang-masuk", label: "Barang Masuk", icon: ArrowDownToLine },
-      { href: "/barang-keluar", label: "Barang Keluar", icon: ArrowUpFromLine },
-      { href: "/stok-opname", label: "Stok Opname", icon: ClipboardCheck },
+      { href: "/data-barang", label: "Data Barang", icon: Package, permission: "products:view" },
+      { href: "/barang-masuk", label: "Barang Masuk", icon: ArrowDownToLine, permission: "inbound:post" },
+      { href: "/barang-keluar", label: "Barang Keluar", icon: ArrowUpFromLine, permission: "outbound:post" },
+      { href: "/stok-opname", label: "Stok Opname", icon: ClipboardCheck, permission: "opname:count" },
     ],
   },
   {
     label: "Administrasi",
     items: [
-      { href: "/laporan", label: "Laporan", icon: ChartColumn },
-      { href: "/pengaturan", label: "Pengaturan", icon: Settings, placement: "footer" },
+      { href: "/laporan", label: "Laporan", icon: ChartColumn, permission: "reports:view" },
+      { href: "/pengaturan", label: "Pengaturan", icon: Settings, permission: "settings:manage", placement: "footer" },
     ],
   },
 ]
@@ -56,4 +58,10 @@ export function getActiveNavigationItem(pathname: string | null) {
   return navigationItems.find(
     (item) => pathname === item.href || pathname.startsWith(item.href + "/")
   )
+}
+
+export function getVisibleNavigationGroups(role: Role) {
+  return navigationGroups
+    .map((group) => ({ ...group, items: group.items.filter((item) => can(role, item.permission)) }))
+    .filter((group) => group.items.length > 0)
 }

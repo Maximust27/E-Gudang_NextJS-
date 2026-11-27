@@ -3,7 +3,7 @@ import { createInterface } from "node:readline/promises"
 import { Writable } from "node:stream"
 import { hash } from "bcryptjs"
 import { createPrismaClient } from "../lib/db-client.ts"
-import { newUserSchema } from "../lib/auth/credentials.ts"
+import { newUserSchema, passwordCost } from "../lib/auth/credentials.ts"
 
 if (!process.stdin.isTTY || !process.stdout.isTTY) {
   throw new Error("Run this command in an interactive terminal.")
@@ -49,7 +49,7 @@ try {
   prisma = createPrismaClient()
   const { password: plain, ...user } = parsed.data
   await prisma.user.create({
-    data: { ...user, passwordHash: await hash(plain, 12) },
+    data: { ...user, passwordHash: await hash(plain, passwordCost) },
     select: { id: true },
   })
   console.log("User berhasil dibuat.")
